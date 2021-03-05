@@ -1,3 +1,5 @@
 *.exe
 0000/
-*cpp_tests
+*cpp__tests
+Algos/input.txt
+Algos/output.txt

@@ -110,7 +110,7 @@ int dy[4] = {0, 1, 0, -1};
 
 const int mod = 1000000007;
 
-vii primes(int n) { bool P[n]; vii p; for (int j, i = 2; i < n; i++) if (!P[i]) for (p.pb(i), j = i*i; j < n; j += i) P[j] = 1; return p; }
+vii primes(int n) { bool P[n+1] = {false}; vii p; for (int j, i = 2; i <= n; i++) if (!P[i]) for (p.pb(i), j = i*i; j <= n; j += i) P[j] = true; return p; }
 int largest_bit(int x) { return x==0 ? -1 : 63 - __builtin_clzll(x); }
 int gcd(int a, int b) { if (!b) return a; return gcd(b, a % b); }
 int lcm(int a, int b) { return a / gcd(a, b) * b; }
@@ -134,13 +134,12 @@ vii primeRange(int l, int r) {
     for (int p : prime) {
         int low = (l + p -1 ) / p * p;
         for (int j = max(p * p, low); j < r; j += p)
-            // print(j);
             mark[j - l] = true;
     }
     vii marked;
     for (int i = l; i < r; i++)
         if (!mark[i - l])
-            marked.pb(l);
+            marked.pb(i);
     return marked;
 }
 
@@ -152,12 +151,6 @@ void preSolve(int *t) {
 }
 
 void solve() {
-    // int n;
-    // cin >> n;
-    // vii a(n);
-    // cin >> a;
-    
-    
     
     
     
