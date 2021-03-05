@@ -149,7 +149,6 @@ void preSolve(int *t) {
     cin >> l >> r;
     vii prime = primeRange(l, r);
     cout << prime;
-    cout << prime.size();
 }
 
 void solve() {
