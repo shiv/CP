@@ -53,7 +53,7 @@ for problems in problem_tags:
 	problem_url = " " + url + "/problem/" + problems + " \"";
 	os.system('python automate.py' + problem_url + problem_path + "\"")
 	x = url + '/problem/' + problems
-	if problems <='C':
+	if problems <='A':
 		subprocess.run(["C:/Program Files/Google/Chrome/Application/chrome", x], stdout=subprocess.DEVNULL)
 
 open(os.path.join(path,"input.txt"), "a")

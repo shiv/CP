@@ -147,76 +147,81 @@ void solve() {
     map<char, int > m;
     int count = 0;
     // vii con(n);
+    string ans;
     set<char> req;
-    function<bool(int)> update = [&](int i){
+    function<void(int)> go = [&](int i){
     	if (i == n) {
-    		if (count == 0)
-    			return true;
-    		return false;
+    		if (count == 0) 
+    			ans = s;
+    		return;
     	}
 
     	char c = s[i];
-    	int curr = count;
-    	char ins = '$', era = ins;
-    	if (!m[c]) {
+    	int curr = count, mcurr = m[c];
+    	bool ins = false, era = false;
+    	if (m[c] == 0) {
+    		m[c] += k;
     		count += k;
-    		ins = c;
+    		ins = true;
     		req.in(c);
     	}
-    	m[c]++;
-    	if (m[c] == k) {
-    		m[c] = 0;
-    		era = c;
+    	m[c]--;
+    	count--;
+    	if (m[c] == 0) {
+    		era = true;
     		req.erase(c);
     	}
-    	count--;
 
-// print(count);
+    	(go(i + 1));
 
-    	if (update(i + 1))
-    		return true;
+    	if (ans != "")
+    		return;
 
-    	if (count <= n - i) {
-    		if (*(req.rbegin()) >= s[i]) {
-    			s[i] = *lb(all(req), s[i]);
-    			c = s[i];
-    			if (!m[c]) {
-		    		count += k;
-		    		ins = c;
-		    		req.in(c);
-		    	}
-		    	m[c]++;
-		    	if (m[c] == k) {
-		    		m[c] = 0;
-		    		era = c;
-		    		req.erase(c);
-		    	}
-    			count--;
+    	if (era)
+    		req.in(c);
+    	if (ins)
+    		req.erase(c);
+    	m[c] = mcurr;
+    	count = curr;
+
+    	if (n - i - count >= 0) {
+    		if ((n - i - count) && (n - i - count) % k == 0 && s[i] != 'z') {
+    			s[i]++;
+    			m[s[i]] += k;
+    			count += k;
+    			m[s[i]]--;
+    			if (m[s[i]] >= k) {
+    				m[s[i]] -= k;
+    				count -= k;
+    			}
+    			m['a'] += n - i - count;
     			char ch = 'a';
-    			debug_out(m);
     			for (i = i + 1 ; i < n; i++) {
     				while (m[ch] == 0)
     					ch++;
     				s[i] = ch;
     				m[ch]--;
     			}
-    			return true;
+				ans = s;
     		}
-    		else {
-
+    		else if ((n - i - count) % k == 0 && !req.empty() && *(req.rbegin()) > s[i]) {
+    			s[i] = *ub(all(req), s[i]);
+    			m[s[i]]--;
+    			m['a'] += n - i - count;
+    			char ch = 'a';
+    			for (i = i + 1 ; i < n; i++) {
+    				while (m[ch] == 0) {
+    					ch++;
+    				}
+    				s[i] = ch;
+    				m[ch]--;
+    			}
+    			ans = s;
     		}
     	}
-
-    	if (era != '$')
-    		req.in(era);
-    	if (ins != '$')
-    		req.erase(ins);
-    	count = curr;
-
-    	return false;
     };
-    update(0);
-    print(s);
+    go(0);
+    print(ans);
 }
 
 signed main() {

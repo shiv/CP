@@ -115,8 +115,9 @@ int dy[4] = {0, 1, 0, -1};
 
 const int mod = 1000000007;
 
-bool P[200000+1] = {false};
-vii primes(int n) {  vii p; for (int j, i = 2; i <= n; i++) if (!P[i]) for (p.pb(i), j = i * i; j <= n; j += i) P[j] = true; return p; }
+const int M = 2e5;
+int P[M+1];
+vii primes(int n) {  vii p; for (int j, i = 2; i <= n; i++) if (!P[i]) for (p.pb(i), j = i * i; j <= n; j += i) P[j]++; return p; }
 int largest_bit(int x) { return x==0 ? -1 : 63 - __builtin_clzll(x); }
 int gcd(int a, int b) { if(a < b) return gcd(b, a);if (!b) return a; return gcd(b, a % b); }
 int lcm(int a, int b) { return a / gcd(a, b) * b; }
@@ -140,12 +141,75 @@ void solve() {
     cin >> n >> q;
     vii a(n);
     cin >> a;
-	vii p = primes(200000);
-	vii count[p.sz];
+
+    int GCD = a[0];
+    for (int i = 1; i < n; i++)
+        GCD = gcd(GCD, a[i]);
+    for (int i = 0; i < n; i++)
+        a[i] /= GCD;
+
+    map<int, int> m[n];
+	vii allPrime = primes(M);
+    vii prime = primes(sqrt(M));
+    int prime_size = prime.size();
+    for (int j = 0, i = 2; i <= M; i++) {
+        if (P[i] == 0)
+            P[i] = j++;
+        else
+            P[i] = -1;
+    }
+
+    set<int> S[allPrime.sz];
+
+    auto check = [&] (int index, int p) {
+        if (S[index].sz == n) {
+            S[index].clear();
+            int mini = inf;
+            for (int i = 0; i < n; i++)
+                amin(mini, m[i][p]);
+            for (int i = 0; i < n; i++) {
+                m[i][p] -= mini;
+                if (m[i][p])
+                    S[index].in(i);
+            }
+            while (mini--)
+                GCD = mul(GCD, p);
+        }
+    };
+
+    auto update = [&] (int i, int curr, bool ok) {
+        for (int j = 0; j < prime_size; j++) {
+            int p = prime[j];
+            if (curr % p == 0) {
+                while (curr % p == 0) {
+                    curr /= p;
+                    m[i][p]++;
+                }
+                S[j].in(i);
+                if (ok)
+                    check(j, p);
+            }
+            if (curr == 1)
+                break;
+        }
+        if (curr != 1) {
+            m[i][curr]++;
+            int index = P[curr];
+            S[index].in(i);
+            if (ok)
+                check(index, curr);
+        }
+    };
+
+    for (int i = 0; i < n; i++) {
+        update(i, a[i], false);
+    }
 
 	while (q--) {
 		int i, x;
 		cin >> i >> x;
+        update(i - 1, x, true);
+        print(GCD);
 	}
 }
 
