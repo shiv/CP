@@ -1,6 +1,6 @@
 /**
  *    author:  Shivam Gupta
- *    created: 01.04.2021 20:21:39
+ *    created: 08.04.2021 23:05:30
 **/
 
 // #undef _GLIBCXX_DEBUG
@@ -82,20 +82,22 @@ viii readGraph(int n, int m) { viii g(n); int a, b; for (int i = 0; i < m; i++) 
 const int N = 3e5+5;
 
 void preSolve(int &t) {
-    // cin >> t;
+    cin >> t;
 }
 
 void solve() {
-    int n;
-    cin >> n;
-    
-    int ans = 0;
-    while(n) {
-    	ans += n % 10;
-    	n /= 10;
-    }
+    int n, k1, k2;
+    cin >> n >> k1 >> k2;
+    int w, b;
+    cin >> w >> b;
 
-    print(ans);
+    int k3 = n - k1;
+    int k4 = n - k2;
+
+    w -= min(k1, k2) + abs(k1 - k2) / 2;
+    b -= min(k3, k4) + abs(k3 - k4) / 2;
+    
+    out (w <= 0 && b <= 0);
 }
 
 signed main() {

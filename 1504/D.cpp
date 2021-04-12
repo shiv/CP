@@ -1,6 +1,6 @@
 /**
  *    author:  Shivam Gupta
- *    created: 01.04.2021 20:14:30
+ *    created: 03.04.2021 21:40:26
 **/
 
 // #undef _GLIBCXX_DEBUG
@@ -84,11 +84,52 @@ const int N = 3e5+5;
 void preSolve(int &t) {
 }
 
-void solve() {
-	string s;
 
-	while (getline(cin, s)) 
-		cout << "NO" << endl;
+void solve() {
+    int n;
+    cin >> n;
+
+    viii g(n + 1, vii(n + 1));
+
+    vector<pii> s, t;
+    int m = 0;
+
+    Fore(i, 1, n)
+    	Fore(j, 1, n)
+    		if ((i + j) & 1)
+    			s.pb({i, j});
+    		else
+    			t.pb({i, j});
+    
+	pii x;
+	auto query = [&] (int c) {
+		cout << c << ' ' << x.F << ' ' << x.S << endl;
+	};
+    
+	int a;
+    Fore(i, 1, n * n) {
+    	cin >> a;
+	    if (a != 1 && !s.empty()) {
+	    	x = s.back();
+	    	s.pop_back();
+	    	query(1);
+	    }
+	    else if (a != 2 && !t.empty()) {
+	    	x = t.back();
+	    	t.pop_back();
+	    	query(2);
+	    }
+	    else if (!t.empty()) {
+	    	x = t.back();
+	    	t.pop_back();
+	    	query(3);
+	    }
+	    else {
+	    	x = s.back();
+	    	s.pop_back();
+	    	query(3);
+	    }
+	}
 }
 
 signed main() {

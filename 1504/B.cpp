@@ -1,6 +1,6 @@
 /**
  *    author:  Shivam Gupta
- *    created: 01.04.2021 20:30:21
+ *    created: 03.04.2021 20:20:44
 **/
 
 // #undef _GLIBCXX_DEBUG
@@ -82,13 +82,56 @@ viii readGraph(int n, int m) { viii g(n); int a, b; for (int i = 0; i < m; i++) 
 const int N = 3e5+5;
 
 void preSolve(int &t) {
-    // cin >> t;
+    cin >> t;
 }
 
 void solve() {
-	cin >> s;
-
-	    
+	int n;
+	cin >> n;
+	string a, b;
+	cin >> a >> b;
+    
+    int i = 0;
+    bool ok = true;
+    int X = 0, Y = 0, Z = 0, W = 0;
+    while (i < n) {
+    	if (a[i] == b[i]) {
+			if (a[i] == '0')
+				X++;
+			else
+				Z++;
+			if (b[i] == '0')
+				Y++;
+			else
+				W++;
+    		i++;
+    		continue;
+    	}
+    	int x = 0, y = 0, z = 0, w = 0;
+    	while (i < n && a[i] != b[i]) {
+			if (a[i] == '0')
+				X++;
+			else
+				Z++;
+			if (b[i] == '0')
+				Y++;
+			else
+				W++;
+    		if (a[i] == '0')
+    			x++;
+    		else
+    			z++;
+    		if (b[i] == '0')
+    			y++;
+    		else
+    			w++;
+    		i++;
+    	}
+    	if (X != Y || Z != W || X != Z)
+    		ok = false;
+    }
+    
+    out(ok);
 }
 
 signed main() {
