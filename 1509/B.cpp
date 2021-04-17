@@ -1,6 +1,6 @@
 /**
  *    author:  Shivam Gupta
- *    created: 13.04.2021 18:06:07
+ *    created: 16.04.2021 20:09:39
 **/
 
 // #undef _GLIBCXX_DEBUG
@@ -36,10 +36,10 @@ template <typename Head, typename... Tail> void debug_out(Head H, Tail... T) { o
 #define F               first
 #define S               second
 #define inf             LLONG_MAX
-#define For(i, a, b)    for (int i = a; i < b; i++)
-#define Rev(i, a, b)    for (int i = b - 1; i >= a; i--)
-#define Fore(i, a, b)   for (int i = a; i <= b; i++)
-#define Reve(i, a, b)    for (int i = b; i >= a; i--)
+#define For(i, a, b)    for (int i = (a); i < (b); i++)
+#define Rev(i, a, b)    for (int i = (b - 1); i >= (a); i--)
+#define Fore(i, a, b)   for (int i = (a); i <= (b); i++)
+#define Reve(i, a, b)    for (int i = (b); i >= (a); i--)
 #define memset(x, y)    memset(x, y, sizeof(x))
 #define fps(x, y)       fixed << setprecision(y) << x
 #define caseno(i)       cout << "Case #" << i << ": "
@@ -85,83 +85,38 @@ void preSolve(int &t) {
     cin >> t;
 }
 
-struct dsu {
-    int n;
-    vii parent, size;
-
-    void init(int _n) {
-        n = _n;
-        size.resize(n, 1);
-        parent.resize(n);
-        for (int i = 0; i < n; i++)
-            parent[i] = i;
-    }
-
-    int mark(int i) {
-        if (parent[i] != i)
-            parent[i] = mark(parent[i]);
-        return parent[i];
-    }
-
-    bool merge(int a, int b) {
-        a = mark(a);
-        b = mark(b);
-        if (a == b)
-            return false;
-        if (size[a] < size[b])
-            parent[a] = b;
-        else if (size[a] > size[b])
-            parent[b] = a;
-        else {
-            parent[b] = a;
-            size[a]++;
-        }
-        return true;
-    }
-};
-
 void solve() {
-    int n, p;
-    cin >> n >> p;
-    vii a(n);
-    cin >> a;
-
-    int ans = 0;
-    dsu d;
-    d.init(n);
-
-    vector<pii> pv(n);
-    for (int i = 0; i < n; i++)
-        pv[i] = {a[i], i};
-    sort(all(pv));
-
-    for (int i = 0; i < n; i++) {
-        int e = pv[i].F, in = pv[i].S;
-
-        if (e >= p)
-            break;
-
-        for (int j = in - 1; j >= 0; j--) {
-            if (a[j] % e)
-                break;
-            if (!d.merge(in, j))
-                break;
-            ans += e;
-        }
-
-        for (int j = in + 1; j < n; j++) {
-            if (a[j] % e)
-                break;
-            if (!d.merge(in, j))
-                break;
-            ans += e;
-        }
+    int n;
+    cin >> n;
+    string s;
+    cin >> s;
+    
+    int t = 0, m = 0;
+    for (char c : s) {
+    	t += (c == 'T');
+    	m += (c == 'M');
     }
 
-    for (int i = 1; i < n; i++)
-        ans += p * d.merge(i - 1, i);
+    bool ok = (2 * m == t);
 
-    print(ans);
+    int i = 0;
+    for (char c : s) {
+    	i += (c == 'T');
+    	i -= (c == 'M');
+    	if (i < 0)
+    		ok = false;
+    }
+
+    reverse(all(s));
+    i = 0;
+    for (char c : s) {
+    	i += (c == 'T');
+    	i -= (c == 'M');
+    	if (i < 0)
+    		ok = false;
+    }
+
+    out(ok);
 }
 
 signed main() {

@@ -1,6 +1,6 @@
 /**
  *    author:  Shivam Gupta
- *    created: 13.04.2021 18:06:07
+ *    created: 12.04.2021 21:19:23
 **/
 
 // #undef _GLIBCXX_DEBUG
@@ -82,86 +82,22 @@ viii readGraph(int n, int m) { viii g(n); int a, b; for (int i = 0; i < m; i++) 
 const int N = 3e5+5;
 
 void preSolve(int &t) {
-    cin >> t;
 }
 
-struct dsu {
-    int n;
-    vii parent, size;
-
-    void init(int _n) {
-        n = _n;
-        size.resize(n, 1);
-        parent.resize(n);
-        for (int i = 0; i < n; i++)
-            parent[i] = i;
-    }
-
-    int mark(int i) {
-        if (parent[i] != i)
-            parent[i] = mark(parent[i]);
-        return parent[i];
-    }
-
-    bool merge(int a, int b) {
-        a = mark(a);
-        b = mark(b);
-        if (a == b)
-            return false;
-        if (size[a] < size[b])
-            parent[a] = b;
-        else if (size[a] > size[b])
-            parent[b] = a;
-        else {
-            parent[b] = a;
-            size[a]++;
-        }
-        return true;
-    }
-};
-
 void solve() {
-    int n, p;
-    cin >> n >> p;
-    vii a(n);
-    cin >> a;
-
-    int ans = 0;
-    dsu d;
-    d.init(n);
-
-    vector<pii> pv(n);
-    for (int i = 0; i < n; i++)
-        pv[i] = {a[i], i};
-    sort(all(pv));
-
-    for (int i = 0; i < n; i++) {
-        int e = pv[i].F, in = pv[i].S;
-
-        if (e >= p)
-            break;
-
-        for (int j = in - 1; j >= 0; j--) {
-            if (a[j] % e)
-                break;
-            if (!d.merge(in, j))
-                break;
-            ans += e;
-        }
-
-        for (int j = in + 1; j < n; j++) {
-            if (a[j] % e)
-                break;
-            if (!d.merge(in, j))
-                break;
-            ans += e;
-        }
+    int n, m;
+    cin >> n >> m;
+    viii v(n, vii(m));
+    For (i, 0, n) {
+    	For (j, 0, m) {
+    		char c;
+    		cin >> c;
+    		if (c == 'o')
+    			v[i][j] = 1;
+    	}
     }
 
-    for (int i = 1; i < n; i++)
-        ans += p * d.merge(i - 1, i);
-
-    print(ans);
+    dbg(v);
 }
 
 signed main() {

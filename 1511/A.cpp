@@ -1,6 +1,6 @@
 /**
  *    author:  Shivam Gupta
- *    created: 13.04.2021 18:06:07
+ *    created: 12.04.2021 20:05:23
 **/
 
 // #undef _GLIBCXX_DEBUG
@@ -85,82 +85,18 @@ void preSolve(int &t) {
     cin >> t;
 }
 
-struct dsu {
-    int n;
-    vii parent, size;
-
-    void init(int _n) {
-        n = _n;
-        size.resize(n, 1);
-        parent.resize(n);
-        for (int i = 0; i < n; i++)
-            parent[i] = i;
-    }
-
-    int mark(int i) {
-        if (parent[i] != i)
-            parent[i] = mark(parent[i]);
-        return parent[i];
-    }
-
-    bool merge(int a, int b) {
-        a = mark(a);
-        b = mark(b);
-        if (a == b)
-            return false;
-        if (size[a] < size[b])
-            parent[a] = b;
-        else if (size[a] > size[b])
-            parent[b] = a;
-        else {
-            parent[b] = a;
-            size[a]++;
-        }
-        return true;
-    }
-};
-
 void solve() {
-    int n, p;
-    cin >> n >> p;
+    int n;
+    cin >> n;
     vii a(n);
     cin >> a;
-
+    
     int ans = 0;
-    dsu d;
-    d.init(n);
 
-    vector<pii> pv(n);
-    for (int i = 0; i < n; i++)
-        pv[i] = {a[i], i};
-    sort(all(pv));
-
-    for (int i = 0; i < n; i++) {
-        int e = pv[i].F, in = pv[i].S;
-
-        if (e >= p)
-            break;
-
-        for (int j = in - 1; j >= 0; j--) {
-            if (a[j] % e)
-                break;
-            if (!d.merge(in, j))
-                break;
-            ans += e;
-        }
-
-        for (int j = in + 1; j < n; j++) {
-            if (a[j] % e)
-                break;
-            if (!d.merge(in, j))
-                break;
-            ans += e;
-        }
-    }
-
-    for (int i = 1; i < n; i++)
-        ans += p * d.merge(i - 1, i);
-
+    for (auto i : a)
+    	if (i == 1 || i == 3)
+    		ans++;
+    	
     print(ans);
 }
 
