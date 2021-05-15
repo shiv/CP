@@ -1,0 +1,16 @@
+[
+	{
+		"correct_answers":
+		[
+			"acac\nabc\n-1\nabaabaaab"
+		],
+		"test": "4\n4 2\nabcd\n3 1\nabc\n4 3\naaaa\n9 3\nabaabaaaa\n"
+	},
+	{
+		"correct_answers":
+		[
+			"zazasqzqsasq\nz\na\n-1\ncbbbbbbbbccccccc\nbaazbz\nbpbbpp\nqwerty\nddddddd\nacabcbdeffexdx\nzzzzzzzzzzzzzzzzzz\n-1"
+		],
+		"test": "12\n12 3\nzazasqzqsasq\n1 1\nz\n1 1\na\n15 4\nabccbaabccbazaa\n16 8\ncadjfdsljfdkljds\n6 2\nbaazaa\n6 3\nbosszb\n6 1\nqwerty\n7 7\ndaaaaaa\n14 2\nacabcbdeffewzd\n18 6\nzzzzzzzzzzzzyyyyyz\n9 4\naabaabbbc\n"
+	}
+]

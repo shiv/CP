@@ -1,0 +1,12 @@
+[
+	{
+		"correct_answers":
+		[
+			"Case #1: 0.5\nCase #2: 0.4\nCase #3: 0.0\nCase #4: 0.25"
+		],
+		"test": "4\n3 10\n1 3 7\n4 10\n4 1 7 3\n4 3\n1 2 3 2\n4 4\n1 2 4 2\n"
+	},
+	{
+		"test": "1\n\t4 4\n\t3 2 3 3\n"
+	}
+]

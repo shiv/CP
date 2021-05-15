@@ -1,0 +1,26 @@
+[
+	{
+		"correct_answers":
+		[
+			"Case #1: 2021\nCase #2: 2122\nCase #3: 78910\nCase #4: 123"
+		],
+		"test": "4\n2020\n2021\n68000\n101\n"
+	},
+	{
+		"correct_answers":
+		[
+			"Case #1: 1234567891011121314"
+		],
+		"test": "1\n1000000000000000000\n"
+	},
+	{
+		"correct_answers":
+		[
+			"Case #1: 99100"
+		],
+		"test": "1\n\t96299\n"
+	},
+	{
+		"test": "1\n998456753\n\n"
+	}
+]
