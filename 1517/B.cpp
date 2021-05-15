@@ -1,6 +1,6 @@
 /**
  *    author:  Shivam Gupta
- *    created: 16.04.2021 21:53:31
+ *    created: 23.04.2021 20:10:52
 **/
 
 // #undef _GLIBCXX_DEBUG
@@ -85,92 +85,43 @@ void preSolve(int &t) {
     cin >> t;
 }
 
-pair<int, string> lcs(const string &a, const string &b) {
-    int m = a.size(), n = b.size();
-    int L[m + 1][n + 1]; 
-    for (int i = 0; i <= m; i++) { 
-        for (int j = 0; j <= n; j++) { 
-            if (i == 0 || j == 0) 
-                L[i][j] = 0; 
-            else if (a[i - 1] == b[j - 1]) 
-                L[i][j] = L[i - 1][j - 1] + 1; 
-            else
-                L[i][j] = max(L[i - 1][j], L[i][j - 1]); 
-        } 
-    } 
-    string lcs;
-    int i = m, j = n;
-    while (i > 0 && j > 0) {
-        if (a[i - 1] == b[j - 1]) {
-            lcs += a[i - 1];
-            i--;
-            j--;
-        }
-        else if (L[i - 1][j] > L[i][j - 1])
-            i--;        
-        else
-            j--;    
-    }
-    reverse(lcs.begin(), lcs.end());
-    return {L[m][n], lcs};
-}
-
-
 void solve() {
-	int n;
-	cin >> n;
-    vector<string> s(3);
-    cin >> s;
+    int n, m;
+    cin >> n >> m;
+    viii b(n, vii(m));
+    cin >> b;
+    
+    vector<pair<int, pii>> a;
+    For (i, 0, n)
+    	For (j, 0, m)
+    		a.pb({b[i][j], {i, j}});
+    sort(all(a));
 
-    vii len(3);
-    for (int i = 0; i < 3; i++)
-        for (auto c : s[i])
-            len[i] += c == '0';
-
-    string x, y;
-    for (int i = 0; i < 3; i++)
-        for (int j = i + 1; j < 3; j++)
-            if (abs(len[i] - len[j]) <= n)
-                x = s[i], y = s[j];
-
-    auto check = [&] (string a, string b) {
-        int i = 0, j = 0;
-        while (i < 2 * n && j < 3 * n) {
-            if (a[i] == b[j])
-                i++;
-            j++;
-        }
-        if (i == 2 * n)
-            return true;
-        return false;
-    };
-
-    string ans;
-    auto Lcs = lcs(x, y).second;
-    int i = 0, j = 0;
-    for (auto ch : Lcs) {
-        while (x[i] != ch) {
-            ans += x[i];
-            i++;
-        }
-        while (y[j] != ch) {
-            ans += y[j];
-            j++;
-        }
-        ans += ch;
-        i++;
-        j++;
-    }
-    while (i < 2 * n) {
-        ans += x[i];
-        i++;
-    }
-    while (j < 2 * n) {
-        ans += y[j];
-        j++;
+    viii c(n, vii(m, -1));
+    For (i, 0, m)
+    	c[a[i].S.F][a[i].S.S] = i;
+    
+    For (i, 0, n) {
+		set<int> t;
+		For (i, 0, m) 
+			t.insert(i);
+    	For (j, 0, m)
+    		t.erase(c[i][j]);
+    	For (j, 0, m) {
+    		if (c[i][j] == -1) {
+    			c[i][j] = *t.begin();
+	    		t.erase(t.begin());
+    		}
+    	}
     }
 
-    print(ans);
+    viii d(n, vii(m));
+    For (i, 0, n)
+    	For (j, 0, m)
+    		d[i][c[i][j]] = b[i][j];
+
+    For (i, 0, n)
+    	cout << d[i];
 }
 
 signed main() {

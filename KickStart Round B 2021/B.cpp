@@ -1,6 +1,6 @@
 /**
  *    author:  Shivam Gupta
- *    created: 16.04.2021 21:53:31
+ *    created: 19.04.2021 04:36:27
 **/
 
 // #undef _GLIBCXX_DEBUG
@@ -85,91 +85,49 @@ void preSolve(int &t) {
     cin >> t;
 }
 
-pair<int, string> lcs(const string &a, const string &b) {
-    int m = a.size(), n = b.size();
-    int L[m + 1][n + 1]; 
-    for (int i = 0; i <= m; i++) { 
-        for (int j = 0; j <= n; j++) { 
-            if (i == 0 || j == 0) 
-                L[i][j] = 0; 
-            else if (a[i - 1] == b[j - 1]) 
-                L[i][j] = L[i - 1][j - 1] + 1; 
-            else
-                L[i][j] = max(L[i - 1][j], L[i][j - 1]); 
-        } 
-    } 
-    string lcs;
-    int i = m, j = n;
-    while (i > 0 && j > 0) {
-        if (a[i - 1] == b[j - 1]) {
-            lcs += a[i - 1];
-            i--;
-            j--;
-        }
-        else if (L[i - 1][j] > L[i][j - 1])
-            i--;        
-        else
-            j--;    
-    }
-    reverse(lcs.begin(), lcs.end());
-    return {L[m][n], lcs};
-}
-
-
 void solve() {
-	int n;
-	cin >> n;
-    vector<string> s(3);
-    cin >> s;
+    int n;
+    cin >> n;
+    vii a(n);
+    cin >> a;
+    
+    if (n == 2) {
+        print(2);
+        return;
+    }
 
-    vii len(3);
-    for (int i = 0; i < 3; i++)
-        for (auto c : s[i])
-            len[i] += c == '0';
+    int ans = 3;
 
-    string x, y;
-    for (int i = 0; i < 3; i++)
-        for (int j = i + 1; j < 3; j++)
-            if (abs(len[i] - len[j]) <= n)
-                x = s[i], y = s[j];
+    vii b(n - 1);
+    For (i, 0, n - 1)
+        b[i] = a[i + 1] - a[i];
 
-    auto check = [&] (string a, string b) {
-        int i = 0, j = 0;
-        while (i < 2 * n && j < 3 * n) {
-            if (a[i] == b[j])
-                i++;
-            j++;
-        }
-        if (i == 2 * n)
-            return true;
-        return false;
-    };
-
-    string ans;
-    auto Lcs = lcs(x, y).second;
-    int i = 0, j = 0;
-    for (auto ch : Lcs) {
-        while (x[i] != ch) {
-            ans += x[i];
+    vector<pii> v;
+    For (i, 1, n) {
+        int j = 1;
+        while (i < n - 1 && b[i] == b[i - 1]) {
             i++;
-        }
-        while (y[j] != ch) {
-            ans += y[j];
             j++;
         }
-        ans += ch;
-        i++;
-        j++;
-    }
-    while (i < 2 * n) {
-        ans += x[i];
-        i++;
-    }
-    while (j < 2 * n) {
-        ans += y[j];
-        j++;
+        v.pb({j, b[i - 1]});
     }
 
+    if (sz(v) == 1) {
+        print(n);
+        return;
+    }
+
+    dbg(v);
+    For (i, 0, sz(v)) {
+        dbg(ans, i);
+        amax(ans, v[i].F + 2);
+        if (i > 2 && v[i - 1].F + v[i - 2].F == 2 && v[i - 1].S + v[i - 2].S == v[i].S + v[i - 3].S && v[i].S == v[i - 3].S)
+            amax(ans, v[i].F + v[i - 3].F + 2 + 1);
+        if (i > 1 && v[i - 1].F + v[i - 2].F == 2 && v[i - 1].S + v[i - 2].S == v[i].S * 2)
+            amax(ans, v[i].F + 1 + 2);
+        if (i < sz(v) - 2 && (v[i + 1].F == 1 || v[i + 2].F == 1) && v[i + 1].S + v[i + 2].S == v[i].S * 2)
+            amax(ans, v[i].F + 1 + 2), dbg(v[i + 1].F, v[i + 2].F, v[i + 1].S, v[i + 2].S, v[i].S);
+    }
     print(ans);
 }
 
@@ -182,6 +140,7 @@ signed main() {
     int t = 1;
     preSolve(t);
     for (int i = 1; i <= t; i++) {
+        caseno(i);
         solve();
     }
     return 0;

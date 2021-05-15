@@ -1,6 +1,6 @@
 /**
  *    author:  Shivam Gupta
- *    created: 16.04.2021 21:53:31
+ *    created: 19.04.2021 06:42:08
 **/
 
 // #undef _GLIBCXX_DEBUG
@@ -85,92 +85,72 @@ void preSolve(int &t) {
     cin >> t;
 }
 
-pair<int, string> lcs(const string &a, const string &b) {
-    int m = a.size(), n = b.size();
-    int L[m + 1][n + 1]; 
-    for (int i = 0; i <= m; i++) { 
-        for (int j = 0; j <= n; j++) { 
-            if (i == 0 || j == 0) 
-                L[i][j] = 0; 
-            else if (a[i - 1] == b[j - 1]) 
-                L[i][j] = L[i - 1][j - 1] + 1; 
-            else
-                L[i][j] = max(L[i - 1][j], L[i][j - 1]); 
-        } 
-    } 
-    string lcs;
-    int i = m, j = n;
-    while (i > 0 && j > 0) {
-        if (a[i - 1] == b[j - 1]) {
-            lcs += a[i - 1];
-            i--;
-            j--;
-        }
-        else if (L[i - 1][j] > L[i][j - 1])
-            i--;        
-        else
-            j--;    
-    }
-    reverse(lcs.begin(), lcs.end());
-    return {L[m][n], lcs};
-}
-
-
 void solve() {
-	int n;
-	cin >> n;
-    vector<string> s(3);
-    cin >> s;
+    int n, q;
+    cin >> n >> q;
 
-    vii len(3);
-    for (int i = 0; i < 3; i++)
-        for (auto c : s[i])
-            len[i] += c == '0';
+    vector<vector<pair<int, pii>>> g(n);
+    auto addEdge = [&] (int x, int y, int l, int a) {
+    	g[x].pb({y, {l, a}});
+    	g[y].pb({x, {l, a}});
+    };
+    	
+    int x, y, L, A;
+    For (i, 0, n - 1) {
+    	cin >> x >> y >> L >> A;
+    	addEdge(x - 1, y - 1, L, A);
+    }
 
-    string x, y;
-    for (int i = 0; i < 3; i++)
-        for (int j = i + 1; j < 3; j++)
-            if (abs(len[i] - len[j]) <= n)
-                x = s[i], y = s[j];
+    map<int, int> m[n]; 
 
-    auto check = [&] (string a, string b) {
-        int i = 0, j = 0;
-        while (i < 2 * n && j < 3 * n) {
-            if (a[i] == b[j])
-                i++;
-            j++;
-        }
-        if (i == 2 * n)
-            return true;
-        return false;
+    function<void (int, int)> dfs;
+    dfs = [&] (int v, int u) {
+    	for (auto [w, d] : g[v]) {
+    		if (w == u)
+                continue;
+            m[w] = m[v];
+            for (auto [l, a] : m[w])
+                if (l > d.F)
+                    m[w][l] = gcd(a, d.S);
+            if (u == -1)
+                m[w][d.F] = d.S;
+            else {
+                auto it = m[v].upper_bound(d.F);
+                if (it != m[v].begin())
+                    m[w][d.F] = gcd((--it)->S, d.S);
+                else
+                    m[w][d.F] = d.S;
+            }
+            int last = 0;
+            for (auto& [l, a] : m[w]) {
+                if (last == 0) {
+                    last = a;
+                    continue;
+                }
+                if (last == a) {
+                    // m[w].erse
+                }
+            }
+			dfs(w, v);
+    	}
     };
 
-    string ans;
-    auto Lcs = lcs(x, y).second;
-    int i = 0, j = 0;
-    for (auto ch : Lcs) {
-        while (x[i] != ch) {
-            ans += x[i];
-            i++;
-        }
-        while (y[j] != ch) {
-            ans += y[j];
-            j++;
-        }
-        ans += ch;
-        i++;
-        j++;
-    }
-    while (i < 2 * n) {
-        ans += x[i];
-        i++;
-    }
-    while (j < 2 * n) {
-        ans += y[j];
-        j++;
-    }
+    dfs(0, -1);
+    // For (i, 0, n)
+    //     dbg(i, m[i]);
 
-    print(ans);
+    while (q--) {
+    	int c, w;
+    	cin >> c >> w;
+    	c -= 1;
+
+    	int ans = 0;
+        auto it = m[c].upper_bound(w);
+        if (it != m[c].begin())
+            ans = (--it)->S;
+    	pr(ans);
+    }
+    print();
 }
 
 signed main() {
@@ -182,6 +162,7 @@ signed main() {
     int t = 1;
     preSolve(t);
     for (int i = 1; i <= t; i++) {
+    	caseno(i);
         solve();
     }
     return 0;

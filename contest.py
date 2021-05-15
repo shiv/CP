@@ -42,8 +42,11 @@ if not os.path.exists(path):
 # subprocess.run(["google-chrome", x], stdout=subprocess.DEVNULL)
 # x = url + '/standings/friends/true'
 # subprocess.run(["C:/Program Files/Google/Chrome/Application/chrome", x], stdout=subprocess.DEVNULL)
-x = url + ''
+x = url + '' 
 subprocess.run(["C:/Program Files/Google/Chrome/Application/chrome", x], stdout=subprocess.DEVNULL)
+
+# x = url + '/problems'
+# subprocess.run(["C:/Program Files/Google/Chrome/Application/chrome", ], stdout=subprocess.DEVNULL)
 
 for problems in problem_tags:
 	problem_path = os.path.join(path,problems)

@@ -1,6 +1,6 @@
 /**
  *    author:  Shivam Gupta
- *    created: 16.04.2021 21:53:31
+ *    created: 23.04.2021 20:38:11
 **/
 
 // #undef _GLIBCXX_DEBUG
@@ -82,95 +82,35 @@ viii readGraph(int n, int m) { viii g(n); int a, b; for (int i = 0; i < m; i++) 
 const int N = 3e5+5;
 
 void preSolve(int &t) {
-    cin >> t;
 }
-
-pair<int, string> lcs(const string &a, const string &b) {
-    int m = a.size(), n = b.size();
-    int L[m + 1][n + 1]; 
-    for (int i = 0; i <= m; i++) { 
-        for (int j = 0; j <= n; j++) { 
-            if (i == 0 || j == 0) 
-                L[i][j] = 0; 
-            else if (a[i - 1] == b[j - 1]) 
-                L[i][j] = L[i - 1][j - 1] + 1; 
-            else
-                L[i][j] = max(L[i - 1][j], L[i][j - 1]); 
-        } 
-    } 
-    string lcs;
-    int i = m, j = n;
-    while (i > 0 && j > 0) {
-        if (a[i - 1] == b[j - 1]) {
-            lcs += a[i - 1];
-            i--;
-            j--;
-        }
-        else if (L[i - 1][j] > L[i][j - 1])
-            i--;        
-        else
-            j--;    
-    }
-    reverse(lcs.begin(), lcs.end());
-    return {L[m][n], lcs};
-}
-
 
 void solve() {
-	int n;
-	cin >> n;
-    vector<string> s(3);
-    cin >> s;
+    int n;
+    cin >> n;
+    vii a(n);
+    cin >> a;
+    
+    viii b(n);
+    For (i, 0, n)
+    	b[i].assign(i + 1, 0);
 
-    vii len(3);
-    for (int i = 0; i < 3; i++)
-        for (auto c : s[i])
-            len[i] += c == '0';
-
-    string x, y;
-    for (int i = 0; i < 3; i++)
-        for (int j = i + 1; j < 3; j++)
-            if (abs(len[i] - len[j]) <= n)
-                x = s[i], y = s[j];
-
-    auto check = [&] (string a, string b) {
-        int i = 0, j = 0;
-        while (i < 2 * n && j < 3 * n) {
-            if (a[i] == b[j])
-                i++;
-            j++;
-        }
-        if (i == 2 * n)
-            return true;
-        return false;
-    };
-
-    string ans;
-    auto Lcs = lcs(x, y).second;
-    int i = 0, j = 0;
-    for (auto ch : Lcs) {
-        while (x[i] != ch) {
-            ans += x[i];
-            i++;
-        }
-        while (y[j] != ch) {
-            ans += y[j];
-            j++;
-        }
-        ans += ch;
-        i++;
-        j++;
-    }
-    while (i < 2 * n) {
-        ans += x[i];
-        i++;
-    }
-    while (j < 2 * n) {
-        ans += y[j];
-        j++;
+    For (k, 0, n) {
+    	int i = k, j = k;
+    	b[i][j] = a[k];
+    	int l = a[k];
+    	while (--l) {
+    		if (j > 0 && b[i][j - 1] == 0)
+	    		j--;
+    		else if (i < n && b[i + 1][j] == 0)
+	    		i++;
+    		else if (j < n && b[i][j + 1] == 0)
+    			j++;
+    		b[i][j] = a[k];
+    	}
     }
 
-    print(ans);
+    For (i, 0, n)
+    	cout << b[i];
 }
 
 signed main() {

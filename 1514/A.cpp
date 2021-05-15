@@ -1,6 +1,6 @@
 /**
  *    author:  Shivam Gupta
- *    created: 16.04.2021 21:53:31
+ *    created: 19.04.2021 19:05:32
 **/
 
 // #undef _GLIBCXX_DEBUG
@@ -79,98 +79,35 @@ int exp(int x, int y, int m = mod) { int res = 1; x = x % m; while (y > 0) { if 
 int modinv(int x, int m = mod) { return exp(x, m - 2, m); }
 viii readGraph(int n, int m) { viii g(n); int a, b; for (int i = 0; i < m; i++) { cin >> a >> b; a--; b--; g[a].pb(b); g[b].pb(a); } return g; }
 
-const int N = 3e5+5;
+const int N = 1e2+5;
+
+vii sq(N);
 
 void preSolve(int &t) {
     cin >> t;
+    For(i, 0, N)
+    	sq[i] = i * i;
 }
-
-pair<int, string> lcs(const string &a, const string &b) {
-    int m = a.size(), n = b.size();
-    int L[m + 1][n + 1]; 
-    for (int i = 0; i <= m; i++) { 
-        for (int j = 0; j <= n; j++) { 
-            if (i == 0 || j == 0) 
-                L[i][j] = 0; 
-            else if (a[i - 1] == b[j - 1]) 
-                L[i][j] = L[i - 1][j - 1] + 1; 
-            else
-                L[i][j] = max(L[i - 1][j], L[i][j - 1]); 
-        } 
-    } 
-    string lcs;
-    int i = m, j = n;
-    while (i > 0 && j > 0) {
-        if (a[i - 1] == b[j - 1]) {
-            lcs += a[i - 1];
-            i--;
-            j--;
-        }
-        else if (L[i - 1][j] > L[i][j - 1])
-            i--;        
-        else
-            j--;    
-    }
-    reverse(lcs.begin(), lcs.end());
-    return {L[m][n], lcs};
-}
-
 
 void solve() {
-	int n;
-	cin >> n;
-    vector<string> s(3);
-    cin >> s;
+    int n;
+    cin >> n;
+    vii a(n);
+    cin >> a;
+    
+    For (i, 0, n)
+    	For (j, 2, N)
+    		while (a[i] % sq[j] == 0)
+    			a[i] /= sq[j];
 
-    vii len(3);
-    for (int i = 0; i < 3; i++)
-        for (auto c : s[i])
-            len[i] += c == '0';
-
-    string x, y;
-    for (int i = 0; i < 3; i++)
-        for (int j = i + 1; j < 3; j++)
-            if (abs(len[i] - len[j]) <= n)
-                x = s[i], y = s[j];
-
-    auto check = [&] (string a, string b) {
-        int i = 0, j = 0;
-        while (i < 2 * n && j < 3 * n) {
-            if (a[i] == b[j])
-                i++;
-            j++;
-        }
-        if (i == 2 * n)
-            return true;
-        return false;
-    };
-
-    string ans;
-    auto Lcs = lcs(x, y).second;
-    int i = 0, j = 0;
-    for (auto ch : Lcs) {
-        while (x[i] != ch) {
-            ans += x[i];
-            i++;
-        }
-        while (y[j] != ch) {
-            ans += y[j];
-            j++;
-        }
-        ans += ch;
-        i++;
-        j++;
-    }
-    while (i < 2 * n) {
-        ans += x[i];
-        i++;
-    }
-    while (j < 2 * n) {
-        ans += y[j];
-        j++;
+    For (i, 0, n) {
+    	if (a[i] != 1) {
+    		out (true);
+    		return;
+    	}
     }
 
-    print(ans);
+    out (false);
 }
 
 signed main() {

@@ -1,6 +1,6 @@
 /**
  *    author:  Shivam Gupta
- *    created: 16.04.2021 21:53:31
+ *    created: 19.04.2021 05:48:22
 **/
 
 // #undef _GLIBCXX_DEBUG
@@ -81,96 +81,80 @@ viii readGraph(int n, int m) { viii g(n); int a, b; for (int i = 0; i < m; i++) 
 
 const int N = 3e5+5;
 
+using u64 = uint64_t;
+using u128 = uint64_t;
+
+u64 binpower(u64 base, u64 e, u64 mod) {
+    u64 result = 1;
+    base %= mod;
+    while (e) {
+        if (e & 1)
+            result = (u128)result * base % mod;
+        base = (u128)base * base % mod;
+        e >>= 1;
+    }
+    return result;
+}
+
+bool check_composite(u64 n, u64 a, u64 d, int s) {
+    u64 x = binpower(a, d, n);
+    if (x == 1 || x == n - 1)
+        return false;
+    for (int r = 1; r < s; r++) {
+        x = (u128)x * x % n;
+        if (x == n - 1)
+            return false;
+    }
+    return true;
+};
+
+bool MillerRabin(u64 n, int iter = 1000) { // returns true if n is probably prime, else returns false.
+    if (n < 4)
+        return n == 2 || n == 3;
+
+    int s = 0;
+    u64 d = n - 1;
+    while ((d & 1) == 0) {
+        d >>= 1;
+        s++;
+    }
+
+    for (int i = 0; i < iter; i++) {
+        int a = 2 + rand() % (n - 3);
+        if (check_composite(n, a, d, s))
+            return false;
+    }
+    return true;
+}
+
+vii p, v;
+
 void preSolve(int &t) {
     cin >> t;
+    p = primes(10000);
+    For (i, 1, sz(p))
+        v.pb(p[i] * p[i - 1]);
 }
-
-pair<int, string> lcs(const string &a, const string &b) {
-    int m = a.size(), n = b.size();
-    int L[m + 1][n + 1]; 
-    for (int i = 0; i <= m; i++) { 
-        for (int j = 0; j <= n; j++) { 
-            if (i == 0 || j == 0) 
-                L[i][j] = 0; 
-            else if (a[i - 1] == b[j - 1]) 
-                L[i][j] = L[i - 1][j - 1] + 1; 
-            else
-                L[i][j] = max(L[i - 1][j], L[i][j - 1]); 
-        } 
-    } 
-    string lcs;
-    int i = m, j = n;
-    while (i > 0 && j > 0) {
-        if (a[i - 1] == b[j - 1]) {
-            lcs += a[i - 1];
-            i--;
-            j--;
-        }
-        else if (L[i - 1][j] > L[i][j - 1])
-            i--;        
-        else
-            j--;    
-    }
-    reverse(lcs.begin(), lcs.end());
-    return {L[m][n], lcs};
-}
-
 
 void solve() {
-	int n;
-	cin >> n;
-    vector<string> s(3);
-    cin >> s;
+    int n;
+    cin >> n;
 
-    vii len(3);
-    for (int i = 0; i < 3; i++)
-        for (auto c : s[i])
-            len[i] += c == '0';
-
-    string x, y;
-    for (int i = 0; i < 3; i++)
-        for (int j = i + 1; j < 3; j++)
-            if (abs(len[i] - len[j]) <= n)
-                x = s[i], y = s[j];
-
-    auto check = [&] (string a, string b) {
-        int i = 0, j = 0;
-        while (i < 2 * n && j < 3 * n) {
-            if (a[i] == b[j])
-                i++;
-            j++;
-        }
-        if (i == 2 * n)
-            return true;
-        return false;
-    };
-
-    string ans;
-    auto Lcs = lcs(x, y).second;
-    int i = 0, j = 0;
-    for (auto ch : Lcs) {
-        while (x[i] != ch) {
-            ans += x[i];
-            i++;
-        }
-        while (y[j] != ch) {
-            ans += y[j];
-            j++;
-        }
-        ans += ch;
-        i++;
-        j++;
-    }
-    while (i < 2 * n) {
-        ans += x[i];
-        i++;
-    }
-    while (j < 2 * n) {
-        ans += y[j];
-        j++;
+    if (n <= 100000000) {
+        print(*(upper_bound(all(v), n) - 1));
+        return;
     }
 
-    print(ans);
+    int m = sqrt(n);
+
+    vii q, u;
+    Fore (i, m - 1600, m + 1600)
+        if (MillerRabin(i))
+            q.pb(i);
+    For (i, 1, sz(q))
+        u.pb(q[i] * q[i - 1]);
+
+    print(*(upper_bound(all(u), n) - 1));
 }
 
 signed main() {
@@ -182,6 +166,7 @@ signed main() {
     int t = 1;
     preSolve(t);
     for (int i = 1; i <= t; i++) {
+        caseno(i);
         solve();
     }
     return 0;

@@ -1,6 +1,6 @@
 /**
  *    author:  Shivam Gupta
- *    created: 16.04.2021 21:53:31
+ *    created: 19.04.2021 19:15:25
 **/
 
 // #undef _GLIBCXX_DEBUG
@@ -82,95 +82,80 @@ viii readGraph(int n, int m) { viii g(n); int a, b; for (int i = 0; i < m; i++) 
 const int N = 3e5+5;
 
 void preSolve(int &t) {
-    cin >> t;
 }
 
-pair<int, string> lcs(const string &a, const string &b) {
-    int m = a.size(), n = b.size();
-    int L[m + 1][n + 1]; 
-    for (int i = 0; i <= m; i++) { 
-        for (int j = 0; j <= n; j++) { 
-            if (i == 0 || j == 0) 
-                L[i][j] = 0; 
-            else if (a[i - 1] == b[j - 1]) 
-                L[i][j] = L[i - 1][j - 1] + 1; 
-            else
-                L[i][j] = max(L[i - 1][j], L[i][j - 1]); 
-        } 
-    } 
-    string lcs;
-    int i = m, j = n;
-    while (i > 0 && j > 0) {
-        if (a[i - 1] == b[j - 1]) {
-            lcs += a[i - 1];
-            i--;
-            j--;
-        }
-        else if (L[i - 1][j] > L[i][j - 1])
-            i--;        
-        else
-            j--;    
+int gcdExtended(int a, int b, int* x, int* y);
+
+int modInverse(int a, int m)
+{
+    int x, y;
+    int g = gcdExtended(a, m, &x, &y);
+    if (g != 1)
+    	return -1;
+    {
+        // m is added to handle negative x
+        int res = (x % m + m) % m;
+        return res;
     }
-    reverse(lcs.begin(), lcs.end());
-    return {L[m][n], lcs};
 }
-
+ 
+// C function for extended Euclidean Algorithm
+int gcdExtended(int a, int b, int* x, int* y)
+{
+    // Base Case
+    if (a == 0)
+    {
+        *x = 0, *y = 1;
+        return b;
+    }
+ 
+    int x1, y1; // To store results of recursive call
+    int gcd = gcdExtended(b % a, a, &x1, &y1);
+ 
+    // Update x and y using results of recursive
+    // call
+    *x = y1 - (b / a) * x1;
+    *y = x1;
+ 
+    return gcd;
+}
 
 void solve() {
-	int n;
-	cin >> n;
-    vector<string> s(3);
-    cin >> s;
+    int n;
+    cin >> n;
+    
+    set<int> q;
+    q.insert(1);
+    For (i, 1, n) {
+    	if (gcd(i, n) == 1) {
+    		q.insert(i);
+    	}
+    }
 
-    vii len(3);
-    for (int i = 0; i < 3; i++)
-        for (auto c : s[i])
-            len[i] += c == '0';
-
-    string x, y;
-    for (int i = 0; i < 3; i++)
-        for (int j = i + 1; j < 3; j++)
-            if (abs(len[i] - len[j]) <= n)
-                x = s[i], y = s[j];
-
-    auto check = [&] (string a, string b) {
-        int i = 0, j = 0;
-        while (i < 2 * n && j < 3 * n) {
-            if (a[i] == b[j])
-                i++;
-            j++;
-        }
-        if (i == 2 * n)
-            return true;
-        return false;
+    auto show = [&] () {
+    	print(sz(q));
+    	for (auto i : q)
+    		pr(i);
+    	print();
     };
 
-    string ans;
-    auto Lcs = lcs(x, y).second;
-    int i = 0, j = 0;
-    for (auto ch : Lcs) {
-        while (x[i] != ch) {
-            ans += x[i];
-            i++;
-        }
-        while (y[j] != ch) {
-            ans += y[j];
-            j++;
-        }
-        ans += ch;
-        i++;
-        j++;
-    }
-    while (i < 2 * n) {
-        ans += x[i];
-        i++;
-    }
-    while (j < 2 * n) {
-        ans += y[j];
-        j++;
+    int ans = 1;
+    for (int i : q)
+    	ans = ans * i % n;
+
+    if (ans == 1) {
+    	show();
+    	return;
     }
 
-    print(ans);
+    for (int i : q) {
+    	if (ans * modInverse(i, n) % n == 1) {
+    		q.erase(i);
+    		break;
+    	}
+    }
+
+    show();
 }
 
 signed main() {

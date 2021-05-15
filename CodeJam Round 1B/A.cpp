@@ -1,19 +1,19 @@
 /**
  *    author:  Shivam Gupta
- *    created: 16.04.2021 21:53:31
+ *    created: 25.04.2021 21:30:00
 **/
 
-// #undef _GLIBCXX_DEBUG
 #include <bits/stdc++.h>
 using namespace std;
 
+template <typename A, typename B> string to_string(pair<A, B> p);
 string to_string(const char& ch) { return "'" + string(1, ch) + "'"; }
 string to_string(const string& s) { return '"' + s + '"'; }
 string to_string(const char* s) { return to_string((string) s); }
 string to_string(bool b) { return (b ? "true" : "false"); }
 string to_string(vector<bool> v) { bool first = true; string res = "{"; for (int i = 0; i < static_cast<int>(v.size()); i++) { if (!first) { res += ", "; } first = false; res += to_string(v[i]); } res += "}"; return res; }
-template <typename A, typename B> string to_string(pair<A, B> p) { return "(" + to_string(p.first) + ", " + to_string(p.second) + ")"; }
 template <typename A> string to_string(A v) { bool first = true; string res = "{"; for (const auto &x : v) { if (!first) { res += ", "; } first = false; res += to_string(x); } res += "}"; return res; }
+template <typename A, typename B> string to_string(pair<A, B> p) { return "(" + to_string(p.first) + ", " + to_string(p.second) + ")"; }
 #define output cout
 void debug_out() { output << endl; }
 template <typename Head, typename... Tail> void debug_out(Head H, Tail... T) { output << " " << to_string(H); debug_out(T...); }
@@ -23,8 +23,8 @@ template <typename Head, typename... Tail> void debug_out(Head H, Tail... T) { o
 #define dbg(...) 42
 #endif
 
-#define FASTIO          ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0)
-#define int             long long
+// #undef _GLIBCXX_DEBUG
+#define int             int64_t
 #define vt              vector
 #define vii             vector<int>
 #define viii            vector<vector<int>>
@@ -39,26 +39,29 @@ template <typename Head, typename... Tail> void debug_out(Head H, Tail... T) { o
 #define For(i, a, b)    for (int i = (a); i < (b); i++)
 #define Rev(i, a, b)    for (int i = (b - 1); i >= (a); i--)
 #define Fore(i, a, b)   for (int i = (a); i <= (b); i++)
-#define Reve(i, a, b)    for (int i = (b); i >= (a); i--)
+#define Reve(i, a, b)   for (int i = (b); i >= (a); i--)
 #define memset(x, y)    memset(x, y, sizeof(x))
 #define fps(x, y)       fixed << setprecision(y) << x
 #define caseno(i)       cout << "Case #" << i << ": "
-#define Time()          cerr << "[Execution : " << (1.0 * clock()) / CLOCKS_PER_SEC << "s]\n"
+#define Time()          output << "[Execution : " << (1.0 * clock()) / CLOCKS_PER_SEC << "s]\n"
 
 template <typename T, typename U> istream& operator>>(istream& in, pair<T, U>& a) { in >> a.F >> a.S; return in; }
 template <typename T, typename U> ostream& operator<<(ostream& out, pair<T, U>& a) { out << a.F << " " << a.S; return out; }
 template <typename T> istream& operator>>(istream& in, vector<T>& a) { for (T& x : a) in >> x; return in; }
-template <typename T> ostream& operator<<(ostream& out, vector<T>& a) { bool f = false; for (T& x : a) { if (f) out << " "; out << x; f = true; } out << '\n'; return out; }
+template <typename T> ostream& operator<<(ostream& out, vector<T>& a) { bool f = false; for (T& x : a) { if (f) out << " "; out << x; f = true; } return out; }
+template <typename T> ostream& operator<<(ostream& out, vector<vector<T>>& a) { for (vector<T>& x : a) out << x << '\n'; return out; }
+template <typename A, size_t S> istream& operator>>(istream& in, array<A, S>& a) { for (A& x : a) in >> x; return in; }
+template <typename A, size_t S> ostream& operator<<(ostream& out, array<A, S>& a) { bool f = false; for (A& x : a) { if (f) out << " "; out << x; f = true; } return out; }
+template <typename A, size_t S, size_t T> ostream& operator<<(ostream& out, array<array<A, S>, T>& a) { for (array<A, S>& x : a) out << x << '\n'; return out; }
 void out(bool ok, bool cap = true) { if (cap) cout << (ok ? "YES" : "NO") << '\n'; else cout << (ok ? "Yes" : "No") << '\n'; }
 
-void pr() {}
 void print() { cout << '\n'; }
-template <typename Head, typename... Tail> void pr(Head H, Tail... T) { cout << H << " "; pr(T...); }
 template <typename Head> void print(Head H) { cout << H; print(); }
 template <typename Head, typename... Tail> void print(Head H, Tail... T) { cout << H << " "; print(T...); }
 
 int rand_int(int l, int r) { static mt19937_64 gen(chrono::steady_clock::now().time_since_epoch().count()); return uniform_int_distribution<int>(l, r)(gen); }
 template <typename T> void myshuffle(vector<T> &a) { for (int i = 0; i < a.size(); i++) swap(a[i], a[rand_int(0, i)]); }
+
 template <typename T, typename U> T amax(T& a, U b) { if (b > a) a = b; return a; }
 template <typename T, typename U> T amin(T& a, U b) { if (b < a) a = b; return a; }
 
@@ -68,7 +71,6 @@ int dy[4] = {0, 1, 0, -1};
 const int mod = 1000000007;
 // const int mod = 998244353;
 
-vii primes(int n) { bool P[n + 1] = {false}; vii p; for (int j, i = 2; i <= n; i++) if (!P[i]) for (p.pb(i), j = i * i; j <= n; j += i) P[j] = true; return p; }
 int largest_bit(int x) { return x==0 ? -1 : 63 - __builtin_clzll(x); }
 int gcd(int a, int b) { if(a < b) return gcd(b, a); if (!b) return a; return gcd(b, a % b); }
 int lcm(int a, int b) { return a / gcd(a, b) * b; }
@@ -77,112 +79,76 @@ int mul(int a, int b) { a %= mod; b %= mod; a = (a * b) % mod; return a; }
 int sub(int a, int b) { a %= mod; b %= mod; a = ((a - b) % mod + mod) % mod; return a; }
 int exp(int x, int y, int m = mod) { int res = 1; x = x % m; while (y > 0) { if (y & 1) res = (res * x) % m; y = y >> 1; x = (x * x) % m; } return res; }
 int modinv(int x, int m = mod) { return exp(x, m - 2, m); }
+vii primes(int n) { bool P[n + 1] = {false}; vii p; for (int j, i = 2; i <= n; i++) if (!P[i]) for (p.pb(i), j = i * i; j <= n; j += i) P[j] = true; return p; }
 viii readGraph(int n, int m) { viii g(n); int a, b; for (int i = 0; i < m; i++) { cin >> a >> b; a--; b--; g[a].pb(b); g[b].pb(a); } return g; }
 
-const int N = 3e5+5;
+const int N = 12 * 360 * 10'000'000'000;
 
 void preSolve(int &t) {
     cin >> t;
 }
 
-pair<int, string> lcs(const string &a, const string &b) {
-    int m = a.size(), n = b.size();
-    int L[m + 1][n + 1]; 
-    for (int i = 0; i <= m; i++) { 
-        for (int j = 0; j <= n; j++) { 
-            if (i == 0 || j == 0) 
-                L[i][j] = 0; 
-            else if (a[i - 1] == b[j - 1]) 
-                L[i][j] = L[i - 1][j - 1] + 1; 
-            else
-                L[i][j] = max(L[i - 1][j], L[i][j - 1]); 
-        } 
-    } 
-    string lcs;
-    int i = m, j = n;
-    while (i > 0 && j > 0) {
-        if (a[i - 1] == b[j - 1]) {
-            lcs += a[i - 1];
-            i--;
-            j--;
-        }
-        else if (L[i - 1][j] > L[i][j - 1])
-            i--;        
-        else
-            j--;    
-    }
-    reverse(lcs.begin(), lcs.end());
-    return {L[m][n], lcs};
-}
+void solve(int tc = 0) {
+	vii v(3);
+	cin >> v;
 
+	sort(all(v));
 
-void solve() {
-	int n;
-	cin >> n;
-    vector<string> s(3);
-    cin >> s;
+	do {
+		vii u = v;
+		int min = u[0];
+		for (auto &i : u) {
+			i -= min;
+			if (i < 0)
+				i += N;
+		}
 
-    vii len(3);
-    for (int i = 0; i < 3; i++)
-        for (auto c : s[i])
-            len[i] += c == '0';
-
-    string x, y;
-    for (int i = 0; i < 3; i++)
-        for (int j = i + 1; j < 3; j++)
-            if (abs(len[i] - len[j]) <= n)
-                x = s[i], y = s[j];
-
-    auto check = [&] (string a, string b) {
-        int i = 0, j = 0;
-        while (i < 2 * n && j < 3 * n) {
-            if (a[i] == b[j])
-                i++;
-            j++;
-        }
-        if (i == 2 * n)
-            return true;
-        return false;
-    };
-
-    string ans;
-    auto Lcs = lcs(x, y).second;
-    int i = 0, j = 0;
-    for (auto ch : Lcs) {
-        while (x[i] != ch) {
-            ans += x[i];
-            i++;
-        }
-        while (y[j] != ch) {
-            ans += y[j];
-            j++;
-        }
-        ans += ch;
-        i++;
-        j++;
-    }
-    while (i < 2 * n) {
-        ans += x[i];
-        i++;
-    }
-    while (j < 2 * n) {
-        ans += y[j];
-        j++;
-    }
-
-    print(ans);
+		int d1 = u[1] - u[0];
+		int d2 = u[2] - u[0];
+		for (int i = 0; i < 60 * 12; i++) {
+			int d3 = d1 + i * N;
+			if (d3 % 11 == 0) {
+				int d4 = d3 / 11 * 719 % N;
+				if (d2 == d4) {
+					for (auto &i : u) {
+						i += d1 / 11;
+						i %= N;
+					}
+					// print(u);
+					int n, s, m, h;
+					n = u[2] / 720 % 1'000'000'000;
+					s = u[2] / (10'000'000'000 * 12 * 6) % 60;
+					m = u[1] / (10'000'000'000 * 12 * 6) % 60;
+					h = u[0] / (10'000'000'000 * 12 * 30) % 12;
+					if (u[2] % 720)
+						continue;
+					if (u[2] / (10'000'000'000 * 12 ) % 6)
+						continue;
+					if (u[1] / (10'000'000'000 * 12) % 6)
+						continue;
+					if (u[0] / (10'000'000'000 * 12) % 30)
+						continue;
+					print(h, m, s, n);
+					return;
+				}
+			}
+		}
+	} while(next_permutation(all(v)));
 }
 
 signed main() {
-#ifdef LOCAL
+#ifdef DLOCAL
     freopen("input.txt", "r", stdin);
     freopen("output.txt", "w", stdout);
 #endif
-    FASTIO;
+    ios_base::sync_with_stdio(0);
+    cin.tie(0);
+    cout.tie(0);
     int t = 1;
     preSolve(t);
     for (int i = 1; i <= t; i++) {
-        solve();
+    	caseno(i);
+        solve(i);
     }
     return 0;
 }

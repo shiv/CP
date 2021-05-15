@@ -1,6 +1,6 @@
 /**
  *    author:  Shivam Gupta
- *    created: 16.04.2021 21:53:31
+ *    created: 18.04.2021 22:02:58
 **/
 
 // #undef _GLIBCXX_DEBUG
@@ -82,95 +82,122 @@ viii readGraph(int n, int m) { viii g(n); int a, b; for (int i = 0; i < m; i++) 
 const int N = 3e5+5;
 
 void preSolve(int &t) {
-    cin >> t;
+    // cin >> t;
 }
 
-pair<int, string> lcs(const string &a, const string &b) {
-    int m = a.size(), n = b.size();
-    int L[m + 1][n + 1]; 
-    for (int i = 0; i <= m; i++) { 
-        for (int j = 0; j <= n; j++) { 
-            if (i == 0 || j == 0) 
-                L[i][j] = 0; 
-            else if (a[i - 1] == b[j - 1]) 
-                L[i][j] = L[i - 1][j - 1] + 1; 
-            else
-                L[i][j] = max(L[i - 1][j], L[i][j - 1]); 
-        } 
-    } 
-    string lcs;
-    int i = m, j = n;
-    while (i > 0 && j > 0) {
-        if (a[i - 1] == b[j - 1]) {
-            lcs += a[i - 1];
-            i--;
-            j--;
-        }
-        else if (L[i - 1][j] > L[i][j - 1])
-            i--;        
-        else
-            j--;    
+#define ll int64_t
+
+struct segtree {
+    ll N=0;
+    vii seg, a;
+    
+    void init(ll n) {
+		N=pow(2,ceil(log2(n)));
+		seg.resize(2*N);
+		a.resize(N);
     }
-    reverse(lcs.begin(), lcs.end());
-    return {L[m][n], lcs};
-}
+    
+    void build(ll i=0, ll l=0, ll r=0) {
+        if(i==0) i=1, l=0, r=N;
+        if(r-l==1) {
+          seg[i]=a[l];
+          return;
+        }
+        ll m=(l+r)/2;
+        build(i*2, l, m);
+        build(i*2+1, m, r);
+        seg[i]=seg[i*2]+seg[i*2+1];
+    }
+    
+    void Set(ll pos, ll val, ll i=0, ll l=0, ll r=0) {
+        if(i==0) i=1, l=0, r=N;
+        // pr(i);
+        if(r-l==1) {
+            seg[i]=val;
+            return;
+        }
+        ll m=(l+r)/2;
+        if(pos<m) Set(pos, val, i*2, l, m);
+        else Set(pos, val, i*2+1, m, r);
+        seg[i]=seg[i*2]+seg[i*2+1];
+    }
+    
+    ll calc(ll lx, ll rx=0, ll i=0, ll l=0, ll r=0) {
+        if(i==0) i=1, l=0, r=N, rx=N;
+        if(min(rx,r)<=max(l,lx)) return 0;
+        if(lx<=l&&r<=rx) return seg[i];
+        ll m=(l+r)/2;
+        return calc(lx, rx, i*2, l, m) + calc(lx, rx, i*2+1, m, r);
+    }
+    
+    
+};
+
+struct SegTree {
+	typedef int T;
+    int n;
+	vector<T> val;
+	static constexpr T unit = INT_MIN;
+	SegTree(int n = 0, T def = unit, vector<T> &a) : val(4 * n, def), n(n), a(a) {}
+
+	T merge(T a, T b) { 
+		return max(a, b); 
+	}
+ 
+    void build(int x, int lx, int rx) {
+        if (rx - lx == 1)
+        	return s[x] = a[lx];
+        int mid = (lx + rx)/2;
+        build(a, 2*x + 1, lx, mid);
+        build(a, 2*x + 2, mid, rx);
+        val[x] = merge(val[2*x + 1], val[2*x + 2]);
+    }
+
+    void build() {
+    	build(1, 0, n);
+    }
+ 
+    void build(vector<int> &a) {
+        build(a, 0, 0, N);
+    }
+ 
+    void set(int i, int v, int x, int lx, int rx) {
+        if (rx - lx == 1) return void(values[x] = single(v));
+        int mid = (lx + rx)/2;
+        if (i < mid) {
+            set(i, v, 2*x + 1, lx, mid);
+        } else {
+            set(i, v, 2*x + 2, mid, rx);
+        }
+        values[x] = merge(values[2*x + 1], values[2*x + 2]);
+    }
+ 
+    void set(int val, int pos) {
+        set(val, pos, 0, 0, N);
+    }
+ 
+    int calc(int l, int r, int x, int lx, int rx) {
+        if (lx >= r || rx <= l) return NEUTRAL;
+        if (l <= lx && rx <= r) return values[x];
+        int mid = (lx + rx)/2;
+        int s1 = calc(l, r, 2*x + 1, lx, mid);
+        int s2 = calc(l, r, 2*x + 2, mid, rx);
+        return merge(s1, s2);
+    }
+ 
+    int calc(int l, int r) {
+        return calc(l, r, 0, 0, N);
+    }
+};
 
 
 void solve() {
-	int n;
-	cin >> n;
-    vector<string> s(3);
-    cin >> s;
+    int n, q;
+    cin >> n >> q;
+    segtree s;
+    s.init(n);
+    For (i, 0, )
 
-    vii len(3);
-    for (int i = 0; i < 3; i++)
-        for (auto c : s[i])
-            len[i] += c == '0';
-
-    string x, y;
-    for (int i = 0; i < 3; i++)
-        for (int j = i + 1; j < 3; j++)
-            if (abs(len[i] - len[j]) <= n)
-                x = s[i], y = s[j];
-
-    auto check = [&] (string a, string b) {
-        int i = 0, j = 0;
-        while (i < 2 * n && j < 3 * n) {
-            if (a[i] == b[j])
-                i++;
-            j++;
-        }
-        if (i == 2 * n)
-            return true;
-        return false;
-    };
-
-    string ans;
-    auto Lcs = lcs(x, y).second;
-    int i = 0, j = 0;
-    for (auto ch : Lcs) {
-        while (x[i] != ch) {
-            ans += x[i];
-            i++;
-        }
-        while (y[j] != ch) {
-            ans += y[j];
-            j++;
-        }
-        ans += ch;
-        i++;
-        j++;
-    }
-    while (i < 2 * n) {
-        ans += x[i];
-        i++;
-    }
-    while (j < 2 * n) {
-        ans += y[j];
-        j++;
-    }
-
-    print(ans);
 }
 
 signed main() {
