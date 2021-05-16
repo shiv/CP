@@ -3,5 +3,8 @@
 0000/
 input.txt
 output.txt
+in
+out
 *.bat
 *.out
+contest.py__tests

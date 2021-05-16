@@ -3,6 +3,7 @@ import urllib.request
 from bs4 import BeautifulSoup
 import os
 import subprocess
+import platform
 
 url = input("Enter Codeforces Contest Id : ")
 url = "https://codeforces.com/contest/" + url
@@ -38,15 +39,16 @@ path = os.path.join(parent_dir,path)
 if not os.path.exists(path):
 	os.mkdir(path)
 
-# x = url + '/submit'
-# subprocess.run(["google-chrome", x], stdout=subprocess.DEVNULL)
-# x = url + '/standings/friends/true'
-# subprocess.run(["C:/Program Files/Google/Chrome/Application/chrome", x], stdout=subprocess.DEVNULL)
-x = url + '' 
-subprocess.run(["C:/Program Files/Google/Chrome/Application/chrome", x], stdout=subprocess.DEVNULL)
+chrome = ""
+if platform.system() == "Windows":
+	chrome = "C:/Program Files/Google/Chrome/Application/chrome"
+if platform.system() == "Linux":
+	chrome = "google-chrome"
 
-# x = url + '/problems'
-# subprocess.run(["C:/Program Files/Google/Chrome/Application/chrome", ], stdout=subprocess.DEVNULL)
+# x = url + '/submit'
+# subprocess.run([chrome, x], stdout=subprocess.DEVNULL)
+# x = url + '/standings/friends/true'
+# subprocess.run([chrome, x], stdout=subprocess.DEVNULL)
 
 for problems in problem_tags:
 	problem_path = os.path.join(path,problems)
@@ -55,11 +57,10 @@ for problems in problem_tags:
 		pass
 	problem_url = " " + url + "/problem/" + problems + " \"";
 	os.system('python automate.py' + problem_url + problem_path + "\"")
-	x = url + '/problem/' + problems
-	if problems <='A':
-		subprocess.run(["C:/Program Files/Google/Chrome/Application/chrome", x], stdout=subprocess.DEVNULL)
+	# x = url + '/problem/' + problems
+	# subprocess.run([chrome, x], stdout=subprocess.DEVNULL)
 
-open(os.path.join(path,"input.txt"), "a")
-open(os.path.join(path,"output.txt"), "a")
+open(os.path.join(path,"in"), "a")
+open(os.path.join(path,"out"), "a")
 
-# subprocess.run(["subl", path], stdout=subprocess.DEVNULL)
+subprocess.run(["subl", path], stdout=subprocess.DEVNULL)
