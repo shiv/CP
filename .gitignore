@@ -8,3 +8,4 @@ out
 *.bat
 *.out
 contest.py__tests
+autocommit.*
