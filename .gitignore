@@ -1,6 +1,6 @@
 *.exe
 *.out
-0000/
+\!Local/
 input.txt
 output.txt
 in
@@ -9,3 +9,5 @@ out
 *.out
 contest.py__tests
 autocommit.*
+*__Generator.cpp
+*__Good.cpp

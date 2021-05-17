@@ -1,1 +1,26 @@
-[{"test": "2\nbac\n3\n2 a\n1 b\n2 c\n", "correct_answers": ["acb"]}, {"test": "1\nabacaba\n4\n1 a\n1 a\n1 c\n2 b\n", "correct_answers": ["baa"]}]
+[
+	{
+		"correct_answers":
+		[
+			"acb"
+		],
+		"test": "2\nbac\n3\n2 a\n1 b\n2 c\n"
+	},
+	{
+		"correct_answers":
+		[
+			"baa"
+		],
+		"test": "1\nabacaba\n4\n1 a\n1 a\n1 c\n2 b\n"
+	},
+	{
+		"correct_answers":
+		[
+			"abcbcabac"
+		],
+		"test": "3\nabac\n3\n2 a\n2 a\n2 a\n"
+	},
+	{
+		"test": ""
+	}
+]

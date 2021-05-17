@@ -83,15 +83,42 @@ viii readGraph(int n, int m) { viii g(n); int a, b; for (int i = 0; i < m; i++) 
 const int N = 3e5 + 5;
 
 void preSolve(int &t) {
-    // cin >> t;
 }
 
 void solve(int tc = 0) {
-    // int n;
-    // cin >> n;
-    // vii a(n);
-    // cin >> a;
-    
+    int k;
+    cin >> k;
+    string s;
+    cin >> s;
+    int n;
+    cin >> n;
+
+    map<char, vii> m;
+    while (n--) {
+        int p;
+        cin >> p;
+        char c;
+        cin >> c;
+        p -= 1;
+
+        int shift = m[c].end() - lower_bound(all(m[c]), p);
+        m[c].pb(p + shift);
+    }
+    dbg(m);
+
+    string ans;
+    map<char, int> count;
+    for (int i = 0; i < k; i++) {
+        for (auto& c : s) {
+            if (!m[c].empty() && m[c].front() == count[c])
+                m[c].erase(m[c].begin());
+            else
+                ans += c;
+            count[c]++;
+        }
+    }
+
+    print(ans);
 }
 
 signed main() {
