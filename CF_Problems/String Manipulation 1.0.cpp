@@ -85,36 +85,98 @@ const int N = 3e5 + 5;
 void preSolve(int &t) {
 }
 
+class fenwick {
+public:
+    int n;
+    vector<int> tree;
+    vector<int> temp;
+    // original array should follow 0 based indexing
+
+    fenwick() {}
+
+    fenwick(int _n) : n(_n) {
+        tree.resize(n + 1);
+        temp.resize(n);
+    }
+
+    fenwick(vector<int>& arr) {
+        n = arr.size();
+        tree.resize(n + 1, 0);
+        temp = arr;
+        for(int i = 0; i < n; i++) {
+            modify(i, temp[i]);
+        }
+    }
+
+    void modify(int idx, int val) {
+        temp[idx] += val;
+        idx += 1;
+        while(idx <= n) {
+            tree[idx] += val;
+            idx += idx & (-idx);
+        }
+    } 
+
+    int query(int idx) {
+        idx += 1;
+        int ret = 0;
+        while(idx > 0) {
+            ret += tree[idx];
+            idx -= idx & (-idx);
+        }
+        return ret;
+    }
+
+    int query(int l, int r) {
+        return query(r) - query(l - 1);
+    }
+};
+
+#define no_of_alphabets 26
+
 void solve(int tc = 0) {
+    auto A = [] (char c) {
+        return c - 'a';
+    };
+
     int k;
     cin >> k;
     string s;
     cin >> s;
+    viii query(no_of_alphabets);
     int n;
     cin >> n;
-
-    map<char, vii> m;
     while (n--) {
         int p;
         cin >> p;
         char c;
         cin >> c;
-        p -= 1;
-
-        int shift = m[c].end() - lower_bound(all(m[c]), p);
-        m[c].pb(p + shift);
+        query[A(c)].pb(p - 1);        
     }
-    dbg(m);
 
     string ans;
-    map<char, int> count;
+
+    map<char, int> m;
+    for (auto& c : s)
+        m[c] += 1;
+
+    vector<fenwick> fk(no_of_alphabets);
+    for (char c = 'a'; c < 'a' + no_of_alphabets; c++)
+        fk[A(c)] = fenwick(k * m[c]);
+
+    for (char c = 'a'; c < 'a' + no_of_alphabets; c++) {
+        for (auto& p : query[A(c)]) {
+            int shift = fk[A(c)].query(p, fk[A(c)].n - 1);
+            fk[A(c)].modify(p + shift, 1);
+        }
+    }
+
+    vii count(no_of_alphabets);
     for (int i = 0; i < k; i++) {
         for (auto& c : s) {
-            if (!m[c].empty() && m[c].front() == count[c])
-                m[c].erase(m[c].begin());
-            else
+            if (!fk[A(c)].temp[count[A(c)]])
                 ans += c;
-            count[c]++;
+            count[A(c)]++;
         }
     }
 

@@ -21,6 +21,14 @@
 		"test": "3\nabac\n3\n2 a\n2 a\n2 a\n"
 	},
 	{
-		"test": ""
+		"correct_answers":
+		[
+			"acbcaac"
+		],
+		"test": "3\nabac\n5\n2 a\n2 a\n2 a\n3 b\n1 b\n",
+		"uncorrect_answers":
+		[
+			"abccaac"
+		]
 	}
 ]
