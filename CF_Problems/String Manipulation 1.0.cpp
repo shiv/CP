@@ -97,6 +97,8 @@ public:
     fenwick(int _n) : n(_n) {
         tree.resize(n + 1);
         temp.resize(n);
+        for(int i = 0; i < n; i++)
+            modify(i, 1);
     }
 
     fenwick(vector<int>& arr) {
@@ -127,8 +129,19 @@ public:
         return ret;
     }
 
-    int query(int l, int r) {
-        return query(r) - query(l - 1);
+    int binary_search(int v) {
+        int sum = 0;
+        int pos = 0;
+        int N = n + 1;
+        int LOGN = log2(N);
+        
+        for(int i=LOGN; i>=0; i--) {
+            if(pos + (1 << i) < N and sum + tree[pos + (1 << i)] < v) {
+                sum += tree[pos + (1 << i)];
+                pos += (1 << i);
+            }
+        }
+        return pos;
     }
 };
 
@@ -151,7 +164,7 @@ void solve(int tc = 0) {
         cin >> p;
         char c;
         cin >> c;
-        query[A(c)].pb(p - 1);        
+        query[A(c)].pb(p);        
     }
 
     string ans;
@@ -166,15 +179,15 @@ void solve(int tc = 0) {
 
     for (char c = 'a'; c < 'a' + no_of_alphabets; c++) {
         for (auto& p : query[A(c)]) {
-            int shift = fk[A(c)].query(p, fk[A(c)].n - 1);
-            fk[A(c)].modify(p + shift, 1);
+            int q = fk[A(c)].binary_search(p);
+            fk[A(c)].modify(q, -1);
         }
     }
 
     vii count(no_of_alphabets);
     for (int i = 0; i < k; i++) {
         for (auto& c : s) {
-            if (!fk[A(c)].temp[count[A(c)]])
+            if (fk[A(c)].temp[count[A(c)]])
                 ans += c;
             count[A(c)]++;
         }
