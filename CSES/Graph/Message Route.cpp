@@ -1,6 +1,6 @@
 /**
  *    author:  Shivam Gupta
- *    created: 19.05.2021 09:35:05
+ *    created: 20.05.2021 10:54:54
 **/
 
 #include <bits/stdc++.h>
@@ -23,7 +23,7 @@ template <typename Head, typename... Tail> void debug_out(Head H, Tail... T) { o
 #define dbg(...) 42
 #endif
 
-// #undef _GLIBCXX_DEBUG
+#define FASTIO          ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0)
 #define int             int64_t
 #define vii             vector<int>
 #define viii            vector<vector<int>>
@@ -40,69 +40,136 @@ template <typename Head, typename... Tail> void debug_out(Head H, Tail... T) { o
 #define Rev(i, a, b)    for (int i = (b - 1); i >= (a); i--)
 #define Fore(i, a, b)   for (int i = (a); i <= (b); i++)
 #define Reve(i, a, b)   for (int i = (b); i >= (a); i--)
-#define fps(x, y)       fixed << setprecision(y) << x
-#define Time()          output << "[Execution : " << (1.0 * clock()) / CLOCKS_PER_SEC << "s]\n"
 
 template <typename T, typename U> istream& operator>>(istream& in, pair<T, U>& a) { in >> a.F >> a.S; return in; }
 template <typename T, typename U> ostream& operator<<(ostream& out, pair<T, U>& a) { out << a.F << " " << a.S; return out; }
 template <typename T> istream& operator>>(istream& in, vector<T>& a) { for (T& x : a) in >> x; return in; }
 template <typename T> ostream& operator<<(ostream& out, vector<T>& a) { bool f = false; for (T& x : a) { if (f) out << " "; out << x; f = true; } return out; }
 template <typename T> ostream& operator<<(ostream& out, vector<vector<T>>& a) { bool f = false; for (vector<T>& x : a) { if (f) out << "\n"; out << x; f = true; } return out; }
-template <typename A, size_t S> istream& operator>>(istream& in, array<A, S>& a) { for (A& x : a) in >> x; return in; }
-template <typename A, size_t S> ostream& operator<<(ostream& out, array<A, S>& a) { bool f = false; for (A& x : a) { if (f) out << " "; out << x; f = true; } return out; }
-template <typename A, size_t S, size_t T> ostream& operator<<(ostream& out, array<array<A, S>, T>& a) { for (array<A, S>& x : a) out << x << '\n'; return out; }
+
 void out(bool ok, bool cap = true) { if (cap) cout << (ok ? "YES" : "NO") << '\n'; else cout << (ok ? "Yes" : "No") << '\n'; }
 
 void print() { cout << '\n'; }
 template <typename Head> void print(Head H) { cout << H; print(); }
 template <typename Head, typename... Tail> void print(Head H, Tail... T) { cout << H << " "; print(T...); }
 
-int rand_int(int l, int r) { static mt19937_64 gen(chrono::steady_clock::now().time_since_epoch().count()); return uniform_int_distribution<int>(l, r)(gen); }
-template <typename T> void myshuffle(vector<T> &a) { for (int i = 0; i < a.size(); i++) swap(a[i], a[rand_int(0, i)]); }
-
 template <typename T, typename U> T amax(T& a, U b) { if (b > a) a = b; return a; }
 template <typename T, typename U> T amin(T& a, U b) { if (b < a) a = b; return a; }
 
-int dx[4] = {-1, 0, 1, 0};
-int dy[4] = {0, 1, 0, -1};
-
 const int mod = 1000000007;
-// const int mod = 998244353;
-
-int largest_bit(int x) { return x == 0 ? -1 : 63 - __builtin_clzll(x); }
-int gcd(int a, int b) { if(a < b) return gcd(b, a); if (!b) return a; return gcd(b, a % b); }
-int lcm(int a, int b) { return a / gcd(a, b) * b; }
-int add(int a, int b) { a %= mod; b %= mod; a = (a + b) % mod; return a; }
-int mul(int a, int b) { a %= mod; b %= mod; a = (a * b) % mod; return a; }
-int sub(int a, int b) { a %= mod; b %= mod; a = ((a - b) % mod + mod) % mod; return a; }
-int exp(int x, int y, int m = mod) { int res = 1; x = x % m; while (y > 0) { if (y & 1) res = (res * x) % m; y = y >> 1; x = (x * x) % m; } return res; }
-int modinv(int x, int m = mod) { return exp(x, m - 2, m); }
-vii primes(int n) { bool P[n + 1] = {false}; vii p; for (int j, i = 2; i <= n; i++) if (!P[i]) for (p.pb(i), j = i * i; j <= n; j += i) P[j] = true; return p; }
-viii readGraph(int n, int m) { viii g(n); int a, b; for (int i = 0; i < m; i++) { cin >> a >> b; a--; b--; g[a].pb(b); g[b].pb(a); } return g; }
-
-const int N = 1e6 + 5;
-
-vii dp(N);
+const int N = 3e5 + 5;
 
 void preSolve(int &t) {
-    for (int i = 1; i <= 6; i++)
-        dp[i] += 1;
-    for (int i = 2; i < N; i++)
-        for (int j = i - 1; j >= max(int(1), i - 6); j--)
-            dp[i] = (dp[i] + dp[j]) % mod;
+    // cin >> t;
 }
 
-void solve(int tc = 0) {
-    int n;
-    cin >> n;
+class graph{
+public:
+    int n, e;
+    vector<vector<int>> g;
+    vector<int> depth, parent;
+    vector<bool> visited;
+    int index = 0;                              // index = 1 for 1-based indexing
 
-    cout << dp[n];
+    graph(int _n, int _index = 0) {
+        n = _n;
+        index = _index;
+        g.resize(n + index);
+        visited.assign(n + index, false);
+        parent.assign(n + index, -1);
+        depth.assign(n + index, -1);
+
+    }
+
+    graph(int _n, vector<vector<int>> edge) : graph(_n) {
+        g = edge;
+    }
+
+    void readGraph(int m) {
+        int u, v;
+        for (int i = 0; i < m; i++) {
+            cin >> u >> v;
+            u -= 1 - index; v -= 1 - index;
+            uadd(u, v);
+        }
+    }
+
+    // undirected edge
+    void uadd(int u, int v) {
+        g[u].push_back(v);
+        g[v].push_back(u);
+    }
+
+    // directed edge
+    void dadd(int u, int v) {
+        g[u].push_back(v);
+    }
+
+    void bfs(int src) {
+        queue<int> q;
+        q.push(src);
+        depth[src] = 0;
+        visited[src] = true;
+
+        while(!q.empty()) {
+            int v = q.front();
+            q.pop();
+
+            for(int u: g[v]){
+                if (visited[u])
+                    continue;
+                visited[u] = true;
+
+                depth[u] = depth[v] + 1;
+                parent[u] = v;
+                q.push(u);
+            }
+        }
+    }
+
+    void dfs(int v) {
+        visited[v] = true;
+
+        for(int u: g[v]) {
+            if(visited[u])
+                continue;
+
+            depth[u] = depth[v] + 1;
+            parent[u] = v;
+            dfs(u);
+        }
+    }
+
+    vector<int> bfs_path(int u) {       // returns empty vector if no path exist
+        vector<int> path;
+        if (!visited[u])
+            return path;
+        for (int v = u; v != -1; v = parent[v])
+            path.push_back(v);
+        reverse(path.begin(), path.end());
+        return path;
+    }
+};
+
+void solve(int tc = 0) {
+    int n, m;
+    cin >> n >> m;
+
+    graph gr(n, 1);
+    gr.readGraph(m);
+    gr.bfs(1);
+
+    vii ans = gr.bfs_path(n);
+    if (ans.empty())
+        print("IMPOSSIBLE");
+    else{
+        print(sz(ans));
+        print(ans);
+    }
 }
 
 signed main() {
-    ios_base::sync_with_stdio(0);
-    cin.tie(0);
-    cout.tie(0);
+    FASTIO;
     int t = 1;
     preSolve(t);
     for (int i = 1; i <= t; i++) {

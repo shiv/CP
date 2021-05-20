@@ -1,6 +1,6 @@
 /**
  *    author:  Shivam Gupta
- *    created: 19.05.2021 09:35:05
+ *    created: 19.05.2021 10:04:38
 **/
 
 #include <bits/stdc++.h>
@@ -80,23 +80,26 @@ int modinv(int x, int m = mod) { return exp(x, m - 2, m); }
 vii primes(int n) { bool P[n + 1] = {false}; vii p; for (int j, i = 2; i <= n; i++) if (!P[i]) for (p.pb(i), j = i * i; j <= n; j += i) P[j] = true; return p; }
 viii readGraph(int n, int m) { viii g(n); int a, b; for (int i = 0; i < m; i++) { cin >> a >> b; a--; b--; g[a].pb(b); g[b].pb(a); } return g; }
 
-const int N = 1e6 + 5;
-
-vii dp(N);
+const int N = 3e5 + 5;
 
 void preSolve(int &t) {
-    for (int i = 1; i <= 6; i++)
-        dp[i] += 1;
-    for (int i = 2; i < N; i++)
-        for (int j = i - 1; j >= max(int(1), i - 6); j--)
-            dp[i] = (dp[i] + dp[j]) % mod;
 }
 
 void solve(int tc = 0) {
-    int n;
-    cin >> n;
+    int n, x;
+    cin >> n >> x;
+    vii c(n);
+    cin >> c;
 
-    cout << dp[n];
+    vii dp(x + 1);
+    dp[0] = 1;
+
+    for (auto& c : c)
+        for (int i = 0; i <= x; i++)
+            if (i - c >= 0)
+                dp[i] = (dp[i] + dp[i - c]) % mod;
+
+    cout << dp[x];
 }
 
 signed main() {
