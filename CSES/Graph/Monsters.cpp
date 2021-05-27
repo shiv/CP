@@ -1,6 +1,6 @@
 /**
  *    author:  Shivam Gupta
- *    created: 22.05.2021 18:34:25
+ *    created: 21.05.2021 01:32:02
 **/
 
 #include <bits/stdc++.h>
@@ -62,29 +62,88 @@ const int N = 3e5 + 5;
 void preSolve(int &t) {
 }
 
+vii dx = {0 , 0, 1, -1};
+vii dy = {1, -1, 0, 0};
+string ds = "RLDU";
+
+bool possible(int x,int y, int n, int m) {      // [n, m)
+    return  0 <= x && x < n && 0 <= y && y < m;
+}
+
+
 void solve(int tc = 0) {
-    string a, b;
-    cin >> a;
-    cin >> b;
-    int n = a.size(), m = b.size();
+    int n, m;
+    cin >> n >> m;
+    vector<vector<char>> s(n, vector<char>(m));
+    cin >> s;
 
-    viii dp(n + 1, vii(m + 1));
-    for (int i = 1; i <= n; i++)
-        dp[i][0] = i;
-    for (int j = 1; j <= m; j++)
-        dp[0][j] = j;
+    vpii A;
+    vpii M;
+    for (int i = 0; i < n; i++)
+        for (int j = 0; j < m; j++)
+            if (s[i][j] == 'A')
+                A.pb({i, j});
+            else if (s[i][j] == 'M')
+                M.pb({i, j});
 
-    for (int i = 1; i <= n; i++) {
-        for (int j = 1; j <= m; j++) {
-            dp[i][j] = inf;
-            if (a[i - 1] == b[j - 1])
-                dp[i][j] = dp[i - 1][j - 1];
-            else
-                dp[i][j] = min({dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1]}) + 1;
+    viii min_A(n, vii(m, inf));
+    viii min_M(n, vii(m, inf));
+    vector<vector<char>> path(n, vector<char>(m, 'O'));
+
+    auto bfs = [&] (vpii& a, viii& visited, int not_monster = 0) {
+        queue<pii> q;
+        for (auto& p : a) {
+            q.push(p);
+            visited[p.F][p.S] = 0;
+        }
+
+        while (!q.empty()) {
+            auto curr = q.front();
+            q.pop();
+            int depth = visited[curr.F][curr.S];
+
+            for (int i = 0; i < 4; i++) {
+                int x = curr.F + dx[i];
+                int y = curr.S + dy[i];
+                if (possible(x, y, n, m) && visited[x][y] == inf && s[x][y] == '.') {
+                    q.push({x, y});
+                    visited[x][y] = depth + 1;
+                    if (not_monster == 1)
+                        path[x][y] = ds[i];
+                }
+            }
+        }
+    };
+
+    bfs(A, min_A, 1);
+    bfs(M, min_M, 0);
+
+    for (int i = 0; i < n; i++) {
+        for (int j = 0;j < m; j++) {
+            if (i == 0 || j == 0 || i == n - 1 || j == m - 1) {
+                if (min_A[i][j] < min_M[i][j]) {
+                    string p;
+                    while (path[i][j] != 'O') {
+                        p += path[i][j];
+                        for (int k = 0; k < 4; k++) {
+                            if (path[i][j] == ds[k]) {
+                                i -= dx[k];
+                                j -= dy[k];
+                                break;
+                            }
+                        }
+                    }
+                    reverse(all(p));
+                    print("YES");
+                    print(sz(p));
+                    print(p);
+                    return;
+                }
+            }
         }
     }
 
-    cout << dp[n][m];
+    print("NO");
 }
 
 signed main() {

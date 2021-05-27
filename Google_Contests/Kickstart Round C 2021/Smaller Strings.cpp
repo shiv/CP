@@ -1,6 +1,6 @@
 /**
  *    author:  Shivam Gupta
- *    created: 22.05.2021 18:34:25
+ *    created: 23.05.2021 16:29:54
 **/
 
 #include <bits/stdc++.h>
@@ -60,31 +60,57 @@ const int mod = 1000000007;
 const int N = 3e5 + 5;
 
 void preSolve(int &t) {
+    cin >> t;
+}
+
+int largest_bit(int x) { return x == 0 ? -1 : 63 - __builtin_clzll(x); }
+int gcd(int a, int b) { if(a < b) return gcd(b, a); if (!b) return a; return gcd(b, a % b); }
+int lcm(int a, int b) { return a / gcd(a, b) * b; }
+int add(int a, int b) { a %= mod; b %= mod; a = (a + b) % mod; return a; }
+int mul(int a, int b) { a %= mod; b %= mod; a = (a * b) % mod; return a; }
+int sub(int a, int b) { a %= mod; b %= mod; a = ((a - b) % mod + mod) % mod; return a; }
+int exp(int x, int y, int m = mod) { int res = 1; x = x % m; while (y > 0) { if (y & 1) res = (res * x) % m; y = y >> 1; x = (x * x) % m; } return res; }
+int modinv(int x, int m = mod) { return exp(x, m - 2, m); }
+vii primes(int n) { bool P[n + 1] = {false}; vii p; for (int j, i = 2; i <= n; i++) if (!P[i]) for (p.pb(i), j = i * i; j <= n; j += i) P[j] = true; return p; }
+viii readGraph(int n, int m) { viii g(n); int a, b; for (int i = 0; i < m; i++) { cin >> a >> b; a--; b--; g[a].pb(b); g[b].pb(a); } return g; }
+
+int LexicoLesserStrings(string s, int k)
+{
+    int count = 0;
+    int len;
+
+    // Find length of string s
+    len = s.size();
+
+    // Looping over the string characters and
+    // finding strings less than that character
+    for (int i = 0; i < len; i++) {
+        count += (s[i] - 'a') * exp(k, len - i - 1) % mod;
+        count %= mod;
+    }
+
+    return count;
 }
 
 void solve(int tc = 0) {
-    string a, b;
-    cin >> a;
-    cin >> b;
-    int n = a.size(), m = b.size();
+    int n, k;
+    cin >> n >> k;
+    string s;
+    cin >> s;
 
-    viii dp(n + 1, vii(m + 1));
-    for (int i = 1; i <= n; i++)
-        dp[i][0] = i;
-    for (int j = 1; j <= m; j++)
-        dp[0][j] = j;
+    int m = (n + 1) / 2;
+    string t(s.begin(), s.begin() + m);
 
-    for (int i = 1; i <= n; i++) {
-        for (int j = 1; j <= m; j++) {
-            dp[i][j] = inf;
-            if (a[i - 1] == b[j - 1])
-                dp[i][j] = dp[i - 1][j - 1];
-            else
-                dp[i][j] = min({dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1]}) + 1;
-        }
-    }
+    int ans = LexicoLesserStrings(t, k);
+    string temp = t;
 
-    cout << dp[n][m];
+    for (int i = m - 1 - (n & 1); i >= 0; i--)
+        temp += s[i];
+
+    ans += (temp < s);
+    ans %= mod;
+    print(ans);
+
 }
 
 signed main() {
@@ -92,7 +118,7 @@ signed main() {
     int t = 1;
     preSolve(t);
     for (int i = 1; i <= t; i++) {
-        // cout << "Case #" << i << ": ";
+        cout << "Case #" << i << ": ";
         solve(i);
     }
     return 0;

@@ -1,6 +1,6 @@
 /**
  *    author:  Shivam Gupta
- *    created: 22.05.2021 18:34:25
+ *    created: 24.05.2021 09:55:27
 **/
 
 #include <bits/stdc++.h>
@@ -60,31 +60,32 @@ const int mod = 1000000007;
 const int N = 3e5 + 5;
 
 void preSolve(int &t) {
+    // cin >> t;
 }
 
-void solve(int tc = 0) {
-    string a, b;
-    cin >> a;
-    cin >> b;
-    int n = a.size(), m = b.size();
 
-    viii dp(n + 1, vii(m + 1));
-    for (int i = 1; i <= n; i++)
-        dp[i][0] = i;
-    for (int j = 1; j <= m; j++)
-        dp[0][j] = j;
+void solve(int tc = 0) {
+    int n;
+    cin >> n;
+    viii x(n, vii(3));
+    cin >> x;
+
+    sort(x.begin(), x.end(), [&] (vii& a, vii& b) {
+        return a[1] < b[1];
+    });
+
+    vii dp(n + 1);
 
     for (int i = 1; i <= n; i++) {
-        for (int j = 1; j <= m; j++) {
-            dp[i][j] = inf;
-            if (a[i - 1] == b[j - 1])
-                dp[i][j] = dp[i - 1][j - 1];
-            else
-                dp[i][j] = min({dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1]}) + 1;
-        }
+        dp[i] = dp[i - 1];
+        int index = lower_bound(x.begin(), x.end(), vii{0, x[i - 1][0], 0}, [&] (vii a, vii b) {
+            return a[1] < b[1];
+        }) - x.begin();
+        dbg(index, i);
+        amax(dp[i], dp[index] + x[i - 1][2]);
     }
 
-    cout << dp[n][m];
+    cout << dp[n];
 }
 
 signed main() {

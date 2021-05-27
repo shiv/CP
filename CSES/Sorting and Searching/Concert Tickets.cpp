@@ -1,6 +1,6 @@
 /**
  *    author:  Shivam Gupta
- *    created: 22.05.2021 18:34:25
+ *    created: 22.05.2021 00:33:47
 **/
 
 #include <bits/stdc++.h>
@@ -60,31 +60,28 @@ const int mod = 1000000007;
 const int N = 3e5 + 5;
 
 void preSolve(int &t) {
+    // cin >> t;
 }
 
 void solve(int tc = 0) {
-    string a, b;
+    int n, m;
+    cin >> n >> m;
+    vii a(n), b(m);
     cin >> a;
     cin >> b;
-    int n = a.size(), m = b.size();
 
-    viii dp(n + 1, vii(m + 1));
-    for (int i = 1; i <= n; i++)
-        dp[i][0] = i;
-    for (int j = 1; j <= m; j++)
-        dp[0][j] = j;
+    multiset<int> tickets(a.begin(), a.end());
 
-    for (int i = 1; i <= n; i++) {
-        for (int j = 1; j <= m; j++) {
-            dp[i][j] = inf;
-            if (a[i - 1] == b[j - 1])
-                dp[i][j] = dp[i - 1][j - 1];
-            else
-                dp[i][j] = min({dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1]}) + 1;
+    for (auto& customer : b) {
+        auto it = tickets.upper_bound(customer);
+        if (it == tickets.begin())
+            cout << -1 << '\n';
+        else {
+            it--;
+            cout << *it << '\n';
+            tickets.erase(it);
         }
     }
-
-    cout << dp[n][m];
 }
 
 signed main() {

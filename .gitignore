@@ -1,6 +1,7 @@
 *.exe
 *.out
 \!Local/
+~Temp/
 input.txt
 output.txt
 in

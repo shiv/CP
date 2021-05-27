@@ -1,6 +1,6 @@
 /**
  *    author:  Shivam Gupta
- *    created: 22.05.2021 18:34:25
+ *    created: 27.05.2021 23:47:34
 **/
 
 #include <bits/stdc++.h>
@@ -23,7 +23,6 @@ template <typename Head, typename... Tail> void debug_out(Head H, Tail... T) { o
 #define dbg(...) 42
 #endif
 
-#define FASTIO          ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0)
 #define int             int64_t
 #define vii             vector<int>
 #define viii            vector<vector<int>>
@@ -35,11 +34,7 @@ template <typename Head, typename... Tail> void debug_out(Head H, Tail... T) { o
 #define in              insert
 #define F               first
 #define S               second
-#define inf             LLONG_MAX
-#define For(i, a, b)    for (int i = (a); i < (b); i++)
-#define Rev(i, a, b)    for (int i = (b - 1); i >= (a); i--)
-#define Fore(i, a, b)   for (int i = (a); i <= (b); i++)
-#define Reve(i, a, b)   for (int i = (b); i >= (a); i--)
+#define inf             1e18
 
 template <typename T, typename U> istream& operator>>(istream& in, pair<T, U>& a) { in >> a.F >> a.S; return in; }
 template <typename T, typename U> ostream& operator<<(ostream& out, pair<T, U>& a) { out << a.F << " " << a.S; return out; }
@@ -60,35 +55,115 @@ const int mod = 1000000007;
 const int N = 3e5 + 5;
 
 void preSolve(int &t) {
+    // cin >> t;
 }
 
-void solve(int tc = 0) {
-    string a, b;
-    cin >> a;
-    cin >> b;
-    int n = a.size(), m = b.size();
+class graph_shortest_path {
+public:
+    int n, e;
+    vector<vector<pii>> g;
+    vector<int> djikstra_dist, bf_dist;
+    vector<vector<int>> fw_dist;
+    int index;
 
-    viii dp(n + 1, vii(m + 1));
-    for (int i = 1; i <= n; i++)
-        dp[i][0] = i;
-    for (int j = 1; j <= m; j++)
-        dp[0][j] = j;
+    graph_shortest_path(int _n, int _index = 0) { // index = 1 for 1-based indexing
+        index = _index;
+        n = _n + index;
+        g.resize(n);
+        djikstra_dist.assign(n, 1e18);
+    }
 
-    for (int i = 1; i <= n; i++) {
-        for (int j = 1; j <= m; j++) {
-            dp[i][j] = inf;
-            if (a[i - 1] == b[j - 1])
-                dp[i][j] = dp[i - 1][j - 1];
-            else
-                dp[i][j] = min({dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1]}) + 1;
+    graph_shortest_path(int _n, vector<vector<pii>> edge) : graph_shortest_path(_n) {
+        g = edge;
+    }
+
+    void readGraph(int m) {
+        for (int i = 0, u, v, w; i < m; i++) {
+            cin >> u >> v >> w;
+            u -= 1 - index; v -= 1 - index;
+            dadd(u, v, w);
         }
     }
 
-    cout << dp[n][m];
+    // undirected edge
+    void uadd(int u, int v, int w) {
+        g[u].push_back({v, w});
+        g[v].push_back({u, w});
+    }
+
+    // directed edge
+    void dadd(int u, int v, int w) {
+        g[u].push_back({v, w});
+    }
+
+    void djikstra(vii src) {
+        // mnpq<pair<int, int>> pq;
+        priority_queue<pii, vector<pii>, greater<pii>> pq;
+        for (int ele : src) {
+            pq.push({0, ele});
+            djikstra_dist[ele] = 0;
+        }
+
+        while (!pq.empty()) {
+            auto [dist, u] = pq.top();
+            pq.pop();
+            if (dist > djikstra_dist[u])
+                continue;
+
+            for (auto& [v, weight] : g[u]) {
+                if (djikstra_dist[v] > djikstra_dist[u] + weight) {
+                    djikstra_dist[v] = djikstra_dist[u] + weight;
+                    pq.push({djikstra_dist[v], v});
+                }
+            }
+        }
+    }
+
+    void flyod_warshall() {
+        fw_dist.assign(n, vector<int>(n, 1e18));
+
+        for (int i = index; i < n; i++)
+            fw_dist[i][i] = 0;
+        for (int i = index; i < n; i++)
+            for (auto& [j, w] : g[i])
+                fw_dist[i][j] = min(fw_dist[i][j], w);
+
+        for (int k = index; k < n; k++)
+            for (int i = index; i < n; i++)
+                for (int j = index; j < n; j++)
+                    fw_dist[i][j] = min(fw_dist[i][j], fw_dist[i][k] + fw_dist[k][j]);
+    }
+
+    bool bellman_ford(int src) {
+        bf_dist.assign(n, inf);
+        bf_dist[src] = 0;
+        for (int i = 0; i < n; i++) {
+            for (int u = 0; u < n; u++) {
+                for (auto& [v, w] : g[u]) {
+                    if (bf_dist[v] > bf_dist[u] + w) {
+                        bf_dist[v] = bf_dist[u] + w;
+                        if (i == n - 1)
+                            return true;    // negative cycle
+                    }
+                }
+            }
+        }
+        return false;
+    }
+};
+
+void solve(int tc = 0) {
+    int n, m;
+    cin >> n >> m;
+
+    graph_shortest_path gr(n);
+    gr.readGraph(m);
+    
+
 }
 
 signed main() {
-    FASTIO;
+    ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0);
     int t = 1;
     preSolve(t);
     for (int i = 1; i <= t; i++) {

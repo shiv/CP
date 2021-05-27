@@ -1,6 +1,6 @@
 /**
  *    author:  Shivam Gupta
- *    created: 22.05.2021 18:34:25
+ *    created: 26.05.2021 18:14:12
 **/
 
 #include <bits/stdc++.h>
@@ -60,31 +60,60 @@ const int mod = 1000000007;
 const int N = 3e5 + 5;
 
 void preSolve(int &t) {
+    // cin >> t;
 }
 
 void solve(int tc = 0) {
-    string a, b;
-    cin >> a;
-    cin >> b;
-    int n = a.size(), m = b.size();
+    int n, m;
+    cin >> n >> m;
 
-    viii dp(n + 1, vii(m + 1));
-    for (int i = 1; i <= n; i++)
-        dp[i][0] = i;
-    for (int j = 1; j <= m; j++)
-        dp[0][j] = j;
+    vii dp(20);
+    dp[0] = 1;
 
-    for (int i = 1; i <= n; i++) {
-        for (int j = 1; j <= m; j++) {
-            dp[i][j] = inf;
-            if (a[i - 1] == b[j - 1])
-                dp[i][j] = dp[i - 1][j - 1];
-            else
-                dp[i][j] = min({dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1]}) + 1;
+    for (int i = 1; i < 20; i++)
+        dp[i] = dp[i - 1] * 9;
+
+    auto digits = [] (int i) {
+        vii digit;
+        while (i) {
+            digit.pb(i % 10);
+            i /= 10;
         }
-    }
+        reverse(all(digit));
+        return digit;
+    };
 
-    cout << dp[n][m];
+    auto lesser = [&] (int x) {
+        vii x_digits = digits(x);
+        int ans = 0;
+        for (int i = 0; i < sz(x_digits); i++) {
+            ans += x_digits[i] * dp[sz(x_digits) - i - 1];
+            if (i != sz(x_digits) - 1)
+                ans += dp[i];
+        }
+        return ans;
+    };
+
+    print(lesser(m) - lesser(n));
+    n = 123;
+    m = 321;
+    int count = 0;
+    for (int i = n; i <= m; i++) {
+        int j = i;
+        int digit = j % 10;
+        j /= 10;
+        while (j) {
+            if (digit == j % 10)
+                break;
+            digit = j % 10;
+            j /= 10;
+        }
+        if (j == 0)
+            count += 1;
+    }
+    print(count);
+
+
 }
 
 signed main() {
@@ -97,3 +126,22 @@ signed main() {
     }
     return 0;
 }
+/*
+    n = 100;
+    m = 1000;
+    int count = 0;
+    for (int i = n; i < m; i++) {
+        int j = i;
+        int digit = j % 10;
+        j /= 10;
+        while (j) {
+            if (digit == j % 10)
+                break;
+            digit = j % 10;
+            j /= 10;
+        }
+        if (j == 0)
+            count += 1;
+    }
+    print(count);
+*/

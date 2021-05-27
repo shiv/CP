@@ -1,6 +1,6 @@
 /**
  *    author:  Shivam Gupta
- *    created: 22.05.2021 18:34:25
+ *    created: 24.05.2021 13:55:41
 **/
 
 #include <bits/stdc++.h>
@@ -60,31 +60,37 @@ const int mod = 1000000007;
 const int N = 3e5 + 5;
 
 void preSolve(int &t) {
+    // cin >> t;
 }
 
 void solve(int tc = 0) {
-    string a, b;
+    int n, x;
+    cin >> n >> x;
+    vii a(n);
     cin >> a;
-    cin >> b;
-    int n = a.size(), m = b.size();
 
-    viii dp(n + 1, vii(m + 1));
-    for (int i = 1; i <= n; i++)
-        dp[i][0] = i;
-    for (int j = 1; j <= m; j++)
-        dp[0][j] = j;
+    int m = 1 << n;
+    vector<pii> dp(m);
+    dp[0] = {1, 0};
 
-    for (int i = 1; i <= n; i++) {
-        for (int j = 1; j <= m; j++) {
-            dp[i][j] = inf;
-            if (a[i - 1] == b[j - 1])
-                dp[i][j] = dp[i - 1][j - 1];
-            else
-                dp[i][j] = min({dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1]}) + 1;
+    for (int i = 1; i < m; i++) {
+        dp[i] = {n + 1, 0};
+        for (int j = 0; j < n; j++) {
+            if (i & (1 << j)) {
+                auto option = dp[i ^ (1 << j)];
+                if (option.S + a[j] <= x) {
+                    option.S += a[j];
+                }
+                else {
+                    option.F += 1;
+                    option.S = a[j];
+                }
+                amin(dp[i], option);
+            }
         }
     }
 
-    cout << dp[n][m];
+    cout << dp.back().F;
 }
 
 signed main() {

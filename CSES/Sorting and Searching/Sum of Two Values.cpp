@@ -1,6 +1,6 @@
 /**
  *    author:  Shivam Gupta
- *    created: 22.05.2021 18:34:25
+ *    created: 22.05.2021 11:04:23
 **/
 
 #include <bits/stdc++.h>
@@ -60,31 +60,35 @@ const int mod = 1000000007;
 const int N = 3e5 + 5;
 
 void preSolve(int &t) {
+    // cin >> t;
 }
 
 void solve(int tc = 0) {
-    string a, b;
+    int n, x;
+    cin >> n >> x;
+    vii a(n);
     cin >> a;
-    cin >> b;
-    int n = a.size(), m = b.size();
 
-    viii dp(n + 1, vii(m + 1));
-    for (int i = 1; i <= n; i++)
-        dp[i][0] = i;
-    for (int j = 1; j <= m; j++)
-        dp[0][j] = j;
+    vii b(n);
+    for (int i = 0; i < n; i++)
+        b[i] = i;
+    sort(b.begin(), b.end(), [&] (int x, int y) {
+        return a[x] < a[y];
+    });
 
-    for (int i = 1; i <= n; i++) {
-        for (int j = 1; j <= m; j++) {
-            dp[i][j] = inf;
-            if (a[i - 1] == b[j - 1])
-                dp[i][j] = dp[i - 1][j - 1];
-            else
-                dp[i][j] = min({dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1]}) + 1;
+    for (int i = 0, j = n - 1; i < j; ) {
+        int diff = a[b[i]] + a[b[j]] - x;
+        if (diff == 0) {
+            cout << b[i] + 1 << ' ' << b[j] + 1;
+            return;
         }
+        if (diff < 0)
+            i += 1;
+        if (diff > 0)
+            j -= 1;
     }
 
-    cout << dp[n][m];
+    cout << "IMPOSSIBLE";
 }
 
 signed main() {

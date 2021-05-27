@@ -1,6 +1,6 @@
 /**
  *    author:  Shivam Gupta
- *    created: 22.05.2021 18:34:25
+ *    created: 23.05.2021 15:01:59
 **/
 
 #include <bits/stdc++.h>
@@ -60,31 +60,26 @@ const int mod = 1000000007;
 const int N = 3e5 + 5;
 
 void preSolve(int &t) {
+    // cin >> t;
 }
 
 void solve(int tc = 0) {
-    string a, b;
+    int n;
+    cin >> n;
+    vii a(n);
     cin >> a;
-    cin >> b;
-    int n = a.size(), m = b.size();
 
-    viii dp(n + 1, vii(m + 1));
-    for (int i = 1; i <= n; i++)
-        dp[i][0] = i;
-    for (int j = 1; j <= m; j++)
-        dp[0][j] = j;
+    vii dp;
 
-    for (int i = 1; i <= n; i++) {
-        for (int j = 1; j <= m; j++) {
-            dp[i][j] = inf;
-            if (a[i - 1] == b[j - 1])
-                dp[i][j] = dp[i - 1][j - 1];
-            else
-                dp[i][j] = min({dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1]}) + 1;
-        }
+    for (int i = 0; i < n; i++) {
+        auto it = lower_bound(dp.begin(), dp.end(), a[i]);
+        if (it == dp.end())
+            dp.pb(a[i]);
+        else
+            *it = a[i];
     }
 
-    cout << dp[n][m];
+    cout << dp.size();
 }
 
 signed main() {

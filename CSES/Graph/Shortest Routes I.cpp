@@ -1,6 +1,6 @@
 /**
  *    author:  Shivam Gupta
- *    created: 22.05.2021 18:34:25
+ *    created: 26.05.2021 22:15:32
 **/
 
 #include <bits/stdc++.h>
@@ -59,32 +59,83 @@ template <typename T, typename U> T amin(T& a, U b) { if (b < a) a = b; return a
 const int mod = 1000000007;
 const int N = 3e5 + 5;
 
-void preSolve(int &t) {
-}
 
-void solve(int tc = 0) {
-    string a, b;
-    cin >> a;
-    cin >> b;
-    int n = a.size(), m = b.size();
+class graph_djikstra {
+public:
+    int n, e;
+    vector<vector<pii>> g;
+    vector<int> djikstra_dist;
+    int index = 0, n_;      // index = 1 for 1-based indexing
 
-    viii dp(n + 1, vii(m + 1));
-    for (int i = 1; i <= n; i++)
-        dp[i][0] = i;
-    for (int j = 1; j <= m; j++)
-        dp[0][j] = j;
+    graph_djikstra(int _n, int _index = 0) {
+        n = _n;
+        index = _index;
+        n_ = n + index;
+        g.resize(n_);
+        djikstra_dist.assign(n_, 1e18);
+    }
 
-    for (int i = 1; i <= n; i++) {
-        for (int j = 1; j <= m; j++) {
-            dp[i][j] = inf;
-            if (a[i - 1] == b[j - 1])
-                dp[i][j] = dp[i - 1][j - 1];
-            else
-                dp[i][j] = min({dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1]}) + 1;
+    graph_djikstra(int _n, vector<vector<pii>> edge) : graph_djikstra(_n) {
+        g = edge;
+    }
+
+    void readGraph(int m) {
+        for (int i = 0, u, v, w; i < m; i++) {
+            cin >> u >> v >> w;
+            u -= 1 - index; v -= 1 - index;
+            dadd(u, v, w);
         }
     }
 
-    cout << dp[n][m];
+    // undirected edge
+    void uadd(int u, int v, int w) {
+        g[u].push_back({v, w});
+        g[v].push_back({u, w});
+    }
+
+    // directed edge
+    void dadd(int u, int v, int w) {
+        g[u].push_back({v, w});
+    }
+
+    void djikstra(vii src) {
+        // mnpq<pair<int, int>> pq;
+        priority_queue<pii, vector<pii>, greater<pii>> pq;
+        for (int ele : src) {
+            pq.push({0, ele});
+            djikstra_dist[ele] = 0;
+        }
+
+        while (!pq.empty()) {
+            auto [dist, v] = pq.top();
+            pq.pop();
+            if (dist > djikstra_dist[v])
+                continue;
+
+            for (auto& [u, weight] : g[v]) {
+                if (djikstra_dist[u] > djikstra_dist[v] + weight) {
+                    djikstra_dist[u] = djikstra_dist[v] + weight;
+                    pq.push({djikstra_dist[u], u});
+                }
+            }
+        }
+    }
+};
+
+
+void preSolve(int &t) {
+    // cin >> t;
+}
+
+void solve(int tc = 0) {
+    int n, m;
+    cin >> n >> m;
+
+    graph_djikstra gr(n);
+    gr.readGraph(m);
+
+    gr.djikstra({0});
+    print(gr.djikstra_dist);
 }
 
 signed main() {

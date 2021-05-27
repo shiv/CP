@@ -1,6 +1,6 @@
 /**
  *    author:  Shivam Gupta
- *    created: 22.05.2021 18:34:25
+ *    created: 26.05.2021 22:15:32
 **/
 
 #include <bits/stdc++.h>
@@ -35,7 +35,7 @@ template <typename Head, typename... Tail> void debug_out(Head H, Tail... T) { o
 #define in              insert
 #define F               first
 #define S               second
-#define inf             LLONG_MAX
+#define inf             1e18
 #define For(i, a, b)    for (int i = (a); i < (b); i++)
 #define Rev(i, a, b)    for (int i = (b - 1); i >= (a); i--)
 #define Fore(i, a, b)   for (int i = (a); i <= (b); i++)
@@ -59,32 +59,104 @@ template <typename T, typename U> T amin(T& a, U b) { if (b < a) a = b; return a
 const int mod = 1000000007;
 const int N = 3e5 + 5;
 
-void preSolve(int &t) {
-}
 
-void solve(int tc = 0) {
-    string a, b;
-    cin >> a;
-    cin >> b;
-    int n = a.size(), m = b.size();
+class graph_minimum_dist {
+public:
+    int n, e;
+    vector<vector<pii>> g;
+    vector<int> djikstra_dist;
+    vector<vector<int>> fw_dist;
+    int index;
 
-    viii dp(n + 1, vii(m + 1));
-    for (int i = 1; i <= n; i++)
-        dp[i][0] = i;
-    for (int j = 1; j <= m; j++)
-        dp[0][j] = j;
+    graph_minimum_dist(int _n, int _index = 0) { // index = 1 for 1-based indexing
+        index = _index;
+        n = _n + index;
+        g.resize(n);
+        djikstra_dist.assign(n, 1e18);
+    }
 
-    for (int i = 1; i <= n; i++) {
-        for (int j = 1; j <= m; j++) {
-            dp[i][j] = inf;
-            if (a[i - 1] == b[j - 1])
-                dp[i][j] = dp[i - 1][j - 1];
-            else
-                dp[i][j] = min({dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1]}) + 1;
+    graph_minimum_dist(int _n, vector<vector<pii>> edge) : graph_minimum_dist(_n) {
+        g = edge;
+    }
+
+    void readGraph(int m) {
+        for (int i = 0, u, v, w; i < m; i++) {
+            cin >> u >> v >> w;
+            u -= 1 - index; v -= 1 - index;
+            uadd(u, v, w);
         }
     }
 
-    cout << dp[n][m];
+    // undirected edge
+    void uadd(int u, int v, int w) {
+        g[u].push_back({v, w});
+        g[v].push_back({u, w});
+    }
+
+    // directed edge
+    void dadd(int u, int v, int w) {
+        g[u].push_back({v, w});
+    }
+
+    void djikstra(vii src) {
+        // mnpq<pair<int, int>> pq;
+        priority_queue<pii, vector<pii>, greater<pii>> pq;
+        for (int ele : src) {
+            pq.push({0, ele});
+            djikstra_dist[ele] = 0;
+        }
+
+        while (!pq.empty()) {
+            auto [dist, u] = pq.top();
+            pq.pop();
+            if (dist > djikstra_dist[u])
+                continue;
+
+            for (auto& [v, weight] : g[u]) {
+                if (djikstra_dist[v] > djikstra_dist[u] + weight) {
+                    djikstra_dist[v] = djikstra_dist[u] + weight;
+                    pq.push({djikstra_dist[v], v});
+                }
+            }
+        }
+    }
+
+    void flyod_warshall() {
+        fw_dist.assign(n, vector<int>(n, 1e18));
+
+        for (int i = index; i < n; i++)
+            fw_dist[i][i] = 0;
+        for (int i = index; i < n; i++)
+            for (auto& [j, w] : g[i])
+                fw_dist[i][j] = min(fw_dist[i][j], w);
+
+        for (int k = index; k < n; k++)
+            for (int i = index; i < n; i++)
+                for (int j = index; j < n; j++)
+                    fw_dist[i][j] = min(fw_dist[i][j], fw_dist[i][k] + fw_dist[k][j]);
+    }
+};
+
+
+void preSolve(int &t) {
+    // cin >> t;
+}
+
+void solve(int tc = 0) {
+    int n, m, q;
+    cin >> n >> m >> q;
+
+    graph_minimum_dist gr(n);
+    gr.readGraph(m);
+
+    gr.flyod_warshall();
+
+    while (q--) {
+        int a, b;
+        cin >> a >> b;
+        a--; b--;
+        print(gr.fw_dist[a][b] == inf ? -1 : gr.fw_dist[a][b]);
+    }
 }
 
 signed main() {

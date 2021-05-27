@@ -1,6 +1,6 @@
 /**
  *    author:  Shivam Gupta
- *    created: 22.05.2021 18:34:25
+ *    created: 20.05.2021 12:26:13
 **/
 
 #include <bits/stdc++.h>
@@ -60,31 +60,138 @@ const int mod = 1000000007;
 const int N = 3e5 + 5;
 
 void preSolve(int &t) {
+    // cin >> t;
 }
 
-void solve(int tc = 0) {
-    string a, b;
-    cin >> a;
-    cin >> b;
-    int n = a.size(), m = b.size();
+class graph{
+public:
+    int n, e;
+    vector<vector<int>> g;
+    vector<int> depth, parent;
+    vector<bool> visited;
+    int index = 0, n_;      // index = 1 for 1-based indexing
 
-    viii dp(n + 1, vii(m + 1));
-    for (int i = 1; i <= n; i++)
-        dp[i][0] = i;
-    for (int j = 1; j <= m; j++)
-        dp[0][j] = j;
+    graph(int _n, int _index = 0) {
+        n = _n;
+        index = _index;
+        n_ = n + index;
+        g.resize(n_);
+        visited.assign(n_, false);
+        parent.assign(n_, -1);
+        depth.assign(n_, -1);
+    }
 
-    for (int i = 1; i <= n; i++) {
-        for (int j = 1; j <= m; j++) {
-            dp[i][j] = inf;
-            if (a[i - 1] == b[j - 1])
-                dp[i][j] = dp[i - 1][j - 1];
-            else
-                dp[i][j] = min({dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1]}) + 1;
+    graph(int _n, vector<vector<int>> edge) : graph(_n) {
+        g = edge;
+    }
+
+    void readGraph(int m) {
+        for (int i = 0, u, v; i < m; i++) {
+            cin >> u >> v;
+            u -= 1 - index; v -= 1 - index;
+            uadd(u, v);
+        }
+        // dbg(g);
+    }
+
+    // undirected edge
+    void uadd(int u, int v) {
+        g[u].push_back(v);
+        g[v].push_back(u);
+    }
+
+    // directed edge
+    void dadd(int u, int v) {
+        g[u].push_back(v);
+    }
+
+    void bfs(int src) {
+        queue<int> q;
+        q.push(src);
+        depth[src] = 0;
+        visited[src] = true;
+
+        while(!q.empty()) {
+            int v = q.front();
+            q.pop();
+
+            for(int u: g[v]){
+                if (visited[u]) {
+                    if (u != parent[v]) {
+                        vii path_v = path(v);
+                        vii path_u = path(u);
+                        while (path_v[1] == path_u[1]) {
+                            path_v.erase(path_v.begin());
+                            path_u.erase(path_u.begin());
+                        }
+                        reverse(all(path_u));
+                        print(sz(path_v) + sz(path_u));
+                        print(path_v, path_u);
+                        exit(0);
+                    }
+                    continue;
+                }
+                visited[u] = true;
+
+                depth[u] = depth[v] + 1;
+                parent[u] = v;
+                q.push(u);
+            }
         }
     }
 
-    cout << dp[n][m];
+    void dfs(int v, int w = -1) {
+        if (w == -1)
+            depth[v] = 0;
+        visited[v] = true;
+
+        for(int u: g[v]) {
+            if(visited[u]) {
+                if (u != parent[v]) {
+                    vii path_v = path(v);
+                    vii path_u = path(u);
+                    while (sz(path_v) > 1 && sz(path_u) > 1 && path_v[1] == path_u[1]) {
+                        path_v.erase(path_v.begin());
+                        path_u.erase(path_u.begin());
+                    }
+                    reverse(all(path_u));
+                    print(sz(path_v) + sz(path_u));
+                    print(path_v, path_u);
+                    exit(0);
+                }
+                continue;
+            }
+
+            depth[u] = depth[v] + 1;
+            parent[u] = v;
+            dfs(u, v);
+        }
+    }
+
+
+    vector<int> path(int u) {       // returns empty vector if no path exist
+        vector<int> path;
+        if (!visited[u])
+            return path;
+        for (int v = u; v != -1; v = parent[v])
+            path.push_back(v);
+        reverse(path.begin(), path.end());
+        return path;
+    }
+};
+
+void solve(int tc = 0) {
+    int n, m;
+    cin >> n >> m;
+    graph gr(n, 1);
+    gr.readGraph(m);
+
+    for (int i = 1; i <= n; i++)
+        if (!gr.visited[i])
+            gr.bfs(i);
+            // gr.dfs(i);  // TLE on large test cases
+
+    print("IMPOSSIBLE");
 }
 
 signed main() {

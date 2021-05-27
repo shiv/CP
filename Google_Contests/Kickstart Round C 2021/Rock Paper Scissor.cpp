@@ -1,6 +1,6 @@
 /**
  *    author:  Shivam Gupta
- *    created: 22.05.2021 18:34:25
+ *    created: 23.05.2021 17:37:41
 **/
 
 #include <bits/stdc++.h>
@@ -60,31 +60,48 @@ const int mod = 1000000007;
 const int N = 3e5 + 5;
 
 void preSolve(int &t) {
+    cin >> t;
+    int x;
+    cin >> x;
 }
 
 void solve(int tc = 0) {
-    string a, b;
-    cin >> a;
-    cin >> b;
-    int n = a.size(), m = b.size();
+    int w, e;
+    cin >> w >> e;
 
-    viii dp(n + 1, vii(m + 1));
-    for (int i = 1; i <= n; i++)
-        dp[i][0] = i;
-    for (int j = 1; j <= m; j++)
-        dp[0][j] = j;
+    string s;
 
-    for (int i = 1; i <= n; i++) {
-        for (int j = 1; j <= m; j++) {
-            dp[i][j] = inf;
-            if (a[i - 1] == b[j - 1])
-                dp[i][j] = dp[i - 1][j - 1];
-            else
-                dp[i][j] = min({dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1]}) + 1;
-        }
+    if (e == w) {
+        for (int i = 0; i < 60; i++)
+            s += "R";
     }
 
-    cout << dp[n][m];
+    if (e == w / 2) {
+        for (int i = 0; i < 30; i++)
+            s += 'R';
+        for (int i = 0; i < 15; i++)
+            s += "PS";
+    }
+
+    if (e == w / 10) {
+        // for (int i = 0; i < 6; i++)
+        //     s += 'R';
+        // for (int i = 0; i < 27; i++)
+        //     s += "PS";
+        for (int i = 0; i < 10; i++)
+            s += "RRPPSS";
+    }
+
+    if (e == 0) {
+        for (int i = 0; i < 20; i++)
+            s += "RPS";
+    }
+
+    s = "";
+    for (int i = 0; i < 20; i++)
+        s += "RPS";
+
+    print(s);
 }
 
 signed main() {
@@ -92,7 +109,7 @@ signed main() {
     int t = 1;
     preSolve(t);
     for (int i = 1; i <= t; i++) {
-        // cout << "Case #" << i << ": ";
+        cout << "Case #" << i << ": ";
         solve(i);
     }
     return 0;

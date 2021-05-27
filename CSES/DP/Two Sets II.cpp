@@ -1,6 +1,6 @@
 /**
  *    author:  Shivam Gupta
- *    created: 22.05.2021 18:34:25
+ *    created: 23.05.2021 12:46:20
 **/
 
 #include <bits/stdc++.h>
@@ -63,28 +63,26 @@ void preSolve(int &t) {
 }
 
 void solve(int tc = 0) {
-    string a, b;
-    cin >> a;
-    cin >> b;
-    int n = a.size(), m = b.size();
+    int n;
+    cin >> n;
+
+    int m = n * (n + 1) / 2;
+    if (m & 1) {
+        cout << 0;
+        return;
+    }
+    m >>= 1;
 
     viii dp(n + 1, vii(m + 1));
+
+    for (int i = 0; i <= n; i++)
+        dp[i][0] = 1;
+
     for (int i = 1; i <= n; i++)
-        dp[i][0] = i;
-    for (int j = 1; j <= m; j++)
-        dp[0][j] = j;
+        for (int j = 1; j <= m; j++)
+            (dp[i][j] = dp[i - 1][j] + (j >= i ? dp[i - 1][j - i] : 0)) %= 2 * mod;
 
-    for (int i = 1; i <= n; i++) {
-        for (int j = 1; j <= m; j++) {
-            dp[i][j] = inf;
-            if (a[i - 1] == b[j - 1])
-                dp[i][j] = dp[i - 1][j - 1];
-            else
-                dp[i][j] = min({dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1]}) + 1;
-        }
-    }
-
-    cout << dp[n][m];
+    cout << dp[n][m] / 2;
 }
 
 signed main() {
