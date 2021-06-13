@@ -1,6 +1,6 @@
 /**
  *    author:  Shivam Gupta
- *    created: 13.06.2021 18:13:46
+ *    created: 13.06.2021 22:37:03
 **/
 
 #include "bits/stdc++.h"
@@ -30,16 +30,58 @@ template <typename T, typename Head, typename... Tail> T amin(T& a, Head b, Tail
 const int inf = 1e18L + 5, mod = 1e9 + 7, N = 3e5 + 5;
 
 void preSolve(int &t) {
-    cin >> t;
 }
 
 void solve(int tc = 0) {
     int n;
     cin >> n;
-    vector<int> a(n);
-    cin >> a;
 
+    set<pair<int, int>> edge;
+    vector<bool> vis(n, false);
+    vector<vector<int>> v(n, vector<int>(n));
 
+    auto query = [&] (int i) {
+        cout << "? " << i + 1 << endl;
+        cin >> v[i];
+    };
+
+    function<void (int, int)> dfs = [&] (int i, int p) {
+        if (vis[i])
+            return;
+        vis[i] = true;
+        query(i);
+        for (int j = 0; j < n; j++) {
+            if (v[i][j] == 1) {
+                vis[j] = true;
+                edge.emplace(min(i, j), max(i, j));
+            }
+        }
+        for (int j = 0; j < n; j++) {
+            if (v[i][j] == 2) {
+                dfs(j, i);
+                int x;
+                vector<int> two_dis;
+                for (int k = 0; k < n; k++) {
+                    if (v[i][k] * v[j][k] == 1)
+                        x = k;
+                    if (v[i][k] == 2 && v[j][k] == 2)
+                        two_dis.push_back(k);
+                }
+                for (int& y : two_dis) {
+                    vis[y] = true;
+                    edge.emplace(min(x, y), max(x, y));
+                }
+            }
+        }
+    };
+
+    for (int i = 0; i < n; i++) {
+        dfs(i, -1);
+    }
+
+    cout << "!" << endl;
+    for (auto &[a, b] : edge)
+        cout << a + 1 << " " << b + 1 << endl;
 }
 
 signed main() {

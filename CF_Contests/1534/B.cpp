@@ -1,6 +1,6 @@
 /**
  *    author:  Shivam Gupta
- *    created: 13.06.2021 18:13:46
+ *    created: 13.06.2021 21:37:12
 **/
 
 #include "bits/stdc++.h"
@@ -39,7 +39,23 @@ void solve(int tc = 0) {
     vector<int> a(n);
     cin >> a;
 
+    a.insert(a.begin(), 0);
+    a.push_back((0));
+    n += 2;
 
+    int ans = 0;
+    for (int i = 1; i < n - 1; i++) {
+        int j = max((int)0, a[i] - max(a[i - 1], a[i + 1]));
+        ans += j;
+        a[i] -= j;
+    }
+    dbg(a);
+
+    for (int i = 0; i < n - 1; i++) {
+        ans += abs(a[i] - a[i + 1]);
+    }
+
+    print(ans);
 }
 
 signed main() {

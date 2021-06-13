@@ -1,6 +1,6 @@
 /**
  *    author:  Shivam Gupta
- *    created: 13.06.2021 18:13:46
+ *    created: 13.06.2021 22:02:26
 **/
 
 #include "bits/stdc++.h"
@@ -33,13 +33,43 @@ void preSolve(int &t) {
     cin >> t;
 }
 
+int exp(int x, int y, int m = mod) { int res = 1; x = x % m; while (y > 0) { if (y & 1) res = (res * x) % m; y = y >> 1; x = (x * x) % m; } return res; }
+
 void solve(int tc = 0) {
     int n;
     cin >> n;
-    vector<int> a(n);
-    cin >> a;
+    vector<int> a(n), b(n);
+    cin >> a >> b;
 
+    vector<vector<int>> g(n);
+    for (int i = 0; i < n; i++) {
+        a[i] -= 1;
+        b[i] -= 1;
+        g[a[i]].push_back(i);
+        g[b[i]].push_back(i);
+    }
 
+    vector<bool> vis(n, false);
+    function<void (int)> dfs = [&] (int v) {
+        if (vis[v])
+            return;
+        vis[v] = true;
+        for (int &u : g[v]) {
+            dfs(a[u]);
+            dfs(b[u]);
+        }
+    };
+
+    int cnt = 0;
+    for (int i = 0; i < n; i++) {
+        if (!vis[i]) {
+            cnt++;
+            dfs(i);
+        }
+    }
+
+    int ans = exp(2, cnt);
+    print(ans);
 }
 
 signed main() {

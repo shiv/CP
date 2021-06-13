@@ -1,9 +1,10 @@
 /**
  *    author:  Shivam Gupta
- *    created: 13.06.2021 18:13:46
+ *    created: 13.06.2021 21:06:28
 **/
 
 #include "bits/stdc++.h"
+#include <vector>
 using namespace std;
 
 bool debug;
@@ -33,13 +34,57 @@ void preSolve(int &t) {
     cin >> t;
 }
 
+int dx[] = {0 , 0, 1, -1};
+int dy[] = {1, -1, 0, 0};
+string ds = "RLDU";
+
+bool possible(int x, int y, int n, int m) {
+    return  0 <= x && x < n && 0 <= y && y < m;
+}
+
 void solve(int tc = 0) {
-    int n;
-    cin >> n;
-    vector<int> a(n);
-    cin >> a;
+    int n, m;
+    cin >> n >> m;
+    vector<string> g(n);
+    cin >> g;
 
+    bool ok = false;
+    function<void (int, int)> dfs = [&] (int x, int y) {
+        if (g[x][y] == '.')
+            return;
+        for (int i = 0; i < 4; i++) {
+            int a = x + dx[i];
+            int b = y + dy[i];
+            if (possible(a, b, n, m)) {
+                if (g[a][b] == g[x][y]) {
+                    ok = true;
+                    return;
+                }
+                if (g[a][b] == '.') {
+                    g[a][b] = 'R' + 'W' - g[x][y];
+                    dfs(a, b);
+                }
+            }
+        }
+    };
 
+    for (int i = 0; i < n; i++)
+        for (int j = 0; j < m; j++)
+            dfs(i, j);
+
+    if (g[0][0] == '.') {
+        g[0][0] = 'R';
+        dfs(0, 0);
+    }
+
+    if (ok) {
+        print("NO");
+    }
+    else {
+        print("YES");
+        for (auto& v : g)
+            print(v);
+    }
 }
 
 signed main() {
