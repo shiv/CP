@@ -1,6 +1,6 @@
 /**
  *    author:  Shivam Gupta
- *    created: 08.06.2021 18:39:51
+ *    created: 07.06.2021 11:25:12
 **/
 
 #include <bits/stdc++.h>
@@ -48,61 +48,53 @@ template <typename T, typename Head, typename... Tail> T amin(T& a, Head b, Tail
 
 void out(bool ok, bool cap = true) { if (cap) cout << (ok ? "YES" : "NO") << '\n'; else cout << (ok ? "Yes" : "No") << '\n'; }
 
+template<typename T> struct reversed_iter { T& container; reversed_iter(T& container): container(container) {} auto begin() -> decltype(container.rbegin()) { return container.rbegin(); } auto end() -> decltype(container.rend()) { return container.rend(); } };
+template<typename T> reversed_iter<T> reversed(T & container) { return reversed_iter<T>(container); }
+
 const int inf = 1e18L + 5;
 const int mod = 1e9 + 7;
 const int N = 3e5 + 5;
 
 void preSolve(int &t) {
+    cin >> t;
 }
 
 void solve(int tc = 0) {
-    int n, m;
-    cin >> n >> m;
+    int n;
+    cin >> n;
+    string s;
+    cin >> s;
 
-    vector<vector<pii>> g1(n + 1), gn(n + 1);
-    for (int i = 0; i < m; i++) {
-        int a, b, c;
-        cin >> a >> b >> c;
-
-        g1[a].eb(b, c);
-        gn[b].eb(a, c);
+    set<string> sub;
+    for (int i = 0; i < n; i++) {
+        for (int j = 1; j <= 3 && i + j <= n; j++) {
+            sub.insert(s.substr(i, j));
+        }
     }
 
-    auto djikstra = [&] (int src, vii& dis, vector<vector<pii>>& g) {
-        priority_queue<pii, vector<pii>, greater<pii>> pq;
-        dis[src] = 0;
-        pq.push({dis[src], src});
-
-        while (!pq.empty()) {
-            auto [dist, u] = pq.top();
-            pq.pop();
-
-            if (dist > dis[u]) {
-                continue;
-            }
-
-            for (auto& [v, weight] : g[u]) {
-                if (dis[v] > dis[u] + weight) {
-                    dis[v] = dis[u] + weight;
-                    pq.push({dis[v], v});
+    string t = "a";
+    while (true) {
+        if (sub.find(t) == sub.end()) {
+            print(t);
+            return;
+        }
+        if (count(all(t), 'z') == t.size()) {
+            for (auto& c : t)
+                c = 'a';
+            t += 'a';
+        }
+        else {
+            for (auto& c : reversed(t)) {
+                if (c != 'z') {
+                    c += 1;
+                    break;
+                }
+                else {
+                    c = 'a';
                 }
             }
         }
-    };
-
-    vii dis1(n + 1, inf), disn(n + 1, inf);
-
-    djikstra(1, dis1, g1);
-    djikstra(n, disn, gn);
-
-    int ans = inf;
-    for (int a = 1; a <= n; a++) {
-        for (auto& [b, c] : g1[a]) {
-            amin(ans, dis1[a] + disn[b] + c / 2);
-        }
     }
-
-    cout << ans;
 }
 
 signed main() {

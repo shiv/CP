@@ -1,6 +1,6 @@
 /**
  *    author:  Shivam Gupta
- *    created: 08.06.2021 18:39:51
+ *    created: 09.06.2021 23:37:33
 **/
 
 #include <bits/stdc++.h>
@@ -59,50 +59,53 @@ void solve(int tc = 0) {
     int n, m;
     cin >> n >> m;
 
-    vector<vector<pii>> g1(n + 1), gn(n + 1);
+    viii g(n);
     for (int i = 0; i < m; i++) {
-        int a, b, c;
-        cin >> a >> b >> c;
+        int a, b;
+        cin >> a >> b;
 
-        g1[a].eb(b, c);
-        gn[b].eb(a, c);
+        g[a - 1].pb(b - 1);
     }
 
-    auto djikstra = [&] (int src, vii& dis, vector<vector<pii>>& g) {
-        priority_queue<pii, vector<pii>, greater<pii>> pq;
-        dis[src] = 0;
-        pq.push({dis[src], src});
-
-        while (!pq.empty()) {
-            auto [dist, u] = pq.top();
-            pq.pop();
-
-            if (dist > dis[u]) {
+    vii dp(n, -1);
+    vii parent(n, -1);
+    vii visited(n);
+    function<void (int)> dfs = [&] (int u) {
+        visited[u] = true;
+        if (u == n - 1) {
+            dp[u] = 1;
+            return;
+        }
+        for (int& v : g[u]) {
+            if (!visited[v])
+                dfs(v);
+            if (dp[v] == -1)
                 continue;
-            }
-
-            for (auto& [v, weight] : g[u]) {
-                if (dis[v] > dis[u] + weight) {
-                    dis[v] = dis[u] + weight;
-                    pq.push({dis[v], v});
-                }
+            if (dp[u] < dp[v] + 1) {
+                dp[u] = dp[v] + 1;
+                parent[u] = v;
             }
         }
     };
 
-    vii dis1(n + 1, inf), disn(n + 1, inf);
+    dfs(0);
 
-    djikstra(1, dis1, g1);
-    djikstra(n, disn, gn);
-
-    int ans = inf;
-    for (int a = 1; a <= n; a++) {
-        for (auto& [b, c] : g1[a]) {
-            amin(ans, dis1[a] + disn[b] + c / 2);
-        }
+    if (dp[0] == -1) {
+        cout << "IMPOSSIBLE";
+        return;
     }
 
-    cout << ans;
+    vii ans;
+    int curr = 0;
+    while (true) {
+        ans.pb(curr + 1);
+        curr = parent[curr];
+        if (ans.back() == n)
+            break;
+    }
+
+    print(dp[0]);
+    print(ans);
 }
 
 signed main() {

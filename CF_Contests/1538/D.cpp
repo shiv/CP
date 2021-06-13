@@ -1,6 +1,6 @@
 /**
  *    author:  Shivam Gupta
- *    created: 08.06.2021 18:39:51
+ *    created: 10.06.2021 20:47:45
 **/
 
 #include <bits/stdc++.h>
@@ -50,59 +50,45 @@ void out(bool ok, bool cap = true) { if (cap) cout << (ok ? "YES" : "NO") << '\n
 
 const int inf = 1e18L + 5;
 const int mod = 1e9 + 7;
-const int N = 3e5 + 5;
+const int N = 1e5 + 5;
 
+vii prime(int n) { bool P[n + 1] = {false}; vii p; for (int j, i = 2; i <= n; i++) if (!P[i]) for (p.pb(i), j = i * i; j <= n; j += i) P[j] = true; return p; }
+
+vii primes;
 void preSolve(int &t) {
+    cin >> t;
+    primes = prime(N);
 }
 
 void solve(int tc = 0) {
-    int n, m;
-    cin >> n >> m;
+    int a, b, k;
+    cin >> a >> b >> k;
 
-    vector<vector<pii>> g1(n + 1), gn(n + 1);
-    for (int i = 0; i < m; i++) {
-        int a, b, c;
-        cin >> a >> b >> c;
-
-        g1[a].eb(b, c);
-        gn[b].eb(a, c);
-    }
-
-    auto djikstra = [&] (int src, vii& dis, vector<vector<pii>>& g) {
-        priority_queue<pii, vector<pii>, greater<pii>> pq;
-        dis[src] = 0;
-        pq.push({dis[src], src});
-
-        while (!pq.empty()) {
-            auto [dist, u] = pq.top();
-            pq.pop();
-
-            if (dist > dis[u]) {
-                continue;
-            }
-
-            for (auto& [v, weight] : g[u]) {
-                if (dis[v] > dis[u] + weight) {
-                    dis[v] = dis[u] + weight;
-                    pq.push({dis[v], v});
-                }
+    auto cnt = [] (int x) {
+        int ans = 0;
+        for (int& i : primes) {
+            while (x % i == 0) {
+                ans += 1;
+                x /= i;
             }
         }
+        return ans + (x != 1);
     };
 
-    vii dis1(n + 1, inf), disn(n + 1, inf);
+    int a_ = cnt(a);
+    int b_ = cnt(b);
 
-    djikstra(1, dis1, g1);
-    djikstra(n, disn, gn);
-
-    int ans = inf;
-    for (int a = 1; a <= n; a++) {
-        for (auto& [b, c] : g1[a]) {
-            amin(ans, dis1[a] + disn[b] + c / 2);
-        }
+    if (a == b && k == 1) {
+        out (false);
+        return;
+    }
+    if (a != b && max(a, b) % min(a, b) != 0 && k == 1) {
+        out (false);
+        return;
     }
 
-    cout << ans;
+    out (k <= a_ + b_);
+    dbg(a_, b_);
 }
 
 signed main() {

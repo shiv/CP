@@ -1,6 +1,6 @@
 /**
  *    author:  Shivam Gupta
- *    created: 08.06.2021 18:39:51
+ *    created: 02.06.2021 16:53:53
 **/
 
 #include <bits/stdc++.h>
@@ -29,10 +29,12 @@ template <typename Head, typename... Tail> void debug_out(Head H, Tail... T) { o
 #define pii             pair<int, int>
 #define vpii            vector<pair<int, int>>
 #define all(v)          (v).begin(), (v).end()
+#define sz(v)           (int)(v).size()
 #define pb              push_back
-#define eb              emplace_back
+#define in              insert
 #define F               first
 #define S               second
+#define inf             1e18
 
 template <typename T, typename U> istream& operator>>(istream& in, pair<T, U>& a) { in >> a.F >> a.S; return in; }
 template <typename T, typename U> ostream& operator<<(ostream& out, pair<T, U>& a) { out << a.F << " " << a.S; return out; }
@@ -40,69 +42,70 @@ template <typename T> istream& operator>>(istream& in, vector<T>& a) { for (T& x
 template <typename T> ostream& operator<<(ostream& out, vector<T>& a) { bool f = false; for (T& x : a) { if (f) out << " "; out << x; f = true; } return out; }
 template <typename T> ostream& operator<<(ostream& out, vector<vector<T>>& a) { bool f = false; for (vector<T>& x : a) { if (f) out << "\n"; out << x; f = true; } return out; }
 
-void print() { cout << "\n"; }
-template <typename Head, typename... Tail> void print(Head H, Tail... T) { cout << H << " "; print(T...); }
-
-template <typename T, typename Head, typename... Tail> T amax(T& a, Head b, Tail... c) { if (b > a) a = b; if constexpr (sizeof...(c) != 0) amax(a, c...); return a; }
-template <typename T, typename Head, typename... Tail> T amin(T& a, Head b, Tail... c) { if (b < a) a = b; if constexpr (sizeof...(c) != 0) amin(a, c...); return a; }
-
 void out(bool ok, bool cap = true) { if (cap) cout << (ok ? "YES" : "NO") << '\n'; else cout << (ok ? "Yes" : "No") << '\n'; }
 
-const int inf = 1e18L + 5;
-const int mod = 1e9 + 7;
+void print() { cout << '\n'; }
+template <typename Head> void print(Head H) { cout << H; print(); }
+template <typename Head, typename... Tail> void print(Head H, Tail... T) { cout << H << " "; print(T...); }
+
+template <typename T, typename U> T amax(T& a, U b) { if (b > a) a = b; return a; }
+template <typename T, typename U> T amin(T& a, U b) { if (b < a) a = b; return a; }
+
+const int mod = 1000000007;
 const int N = 3e5 + 5;
 
 void preSolve(int &t) {
 }
 
+int dx[] = {0 , 0, 1, -1};
+int dy[] = {1, -1, 0, 0};
+string ds = "RLDU";
+
+bool possible(int x,int y, int n, int m) {
+    return  0 <= x && x < n && 0 <= y && y < m;
+}
+
 void solve(int tc = 0) {
-    int n, m;
-    cin >> n >> m;
+    int n, m, w;
+    cin >> n >> m >> w;
+    viii d(n, vii(m));
+    cin >> d;
 
-    vector<vector<pii>> g1(n + 1), gn(n + 1);
-    for (int i = 0; i < m; i++) {
-        int a, b, c;
-        cin >> a >> b >> c;
+    auto bfs = [&] (int i, int j, viii& vis) {
+        int ans = inf;
+        queue<pii> q;
+        vis[i][j] = 0;
+        q.emplace(i, j);
 
-        g1[a].eb(b, c);
-        gn[b].eb(a, c);
-    }
+        while (!q.empty()) {
+            auto [a, b] = q.front();
+            q.pop();
+            if (d[a][b] > 0)
+                amin(ans, d[a][b] + w * vis[a][b]);
 
-    auto djikstra = [&] (int src, vii& dis, vector<vector<pii>>& g) {
-        priority_queue<pii, vector<pii>, greater<pii>> pq;
-        dis[src] = 0;
-        pq.push({dis[src], src});
-
-        while (!pq.empty()) {
-            auto [dist, u] = pq.top();
-            pq.pop();
-
-            if (dist > dis[u]) {
-                continue;
-            }
-
-            for (auto& [v, weight] : g[u]) {
-                if (dis[v] > dis[u] + weight) {
-                    dis[v] = dis[u] + weight;
-                    pq.push({dis[v], v});
+            for (int k = 0; k < 4; k++) {
+                int x = a + dx[k];
+                int y = b + dy[k];
+                if (possible(x, y, n, m) && d[x][y] != -1 && vis[x][y] == -1) {
+                    vis[x][y] = vis[a][b] + 1;
+                    q.emplace(x, y);
                 }
             }
         }
+        return ans;
     };
 
-    vii dis1(n + 1, inf), disn(n + 1, inf);
-
-    djikstra(1, dis1, g1);
-    djikstra(n, disn, gn);
+    viii vis1(n, vii(m, -1));
+    viii vis2(n, vii(m, -1));
+    int ans1 = bfs(0, 0, vis1);
+    int ans2 = bfs(n - 1, m - 1, vis2);
 
     int ans = inf;
-    for (int a = 1; a <= n; a++) {
-        for (auto& [b, c] : g1[a]) {
-            amin(ans, dis1[a] + disn[b] + c / 2);
-        }
-    }
+    amin(ans, ans1 + ans2);
+    if (vis2[0][0] != -1)
+        amin(ans, w * vis2[0][0]);
 
-    cout << ans;
+    print(ans >= inf ? -1 : ans);
 }
 
 signed main() {

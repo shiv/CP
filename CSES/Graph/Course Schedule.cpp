@@ -1,6 +1,6 @@
 /**
  *    author:  Shivam Gupta
- *    created: 08.06.2021 18:39:51
+ *    created: 09.06.2021 23:10:49
 **/
 
 #include <bits/stdc++.h>
@@ -59,49 +59,36 @@ void solve(int tc = 0) {
     int n, m;
     cin >> n >> m;
 
-    vector<vector<pii>> g1(n + 1), gn(n + 1);
+    viii g(n);
+    vii visited(n);
     for (int i = 0; i < m; i++) {
-        int a, b, c;
-        cin >> a >> b >> c;
+        int a, b;
+        cin >> a >> b;
 
-        g1[a].eb(b, c);
-        gn[b].eb(a, c);
+        g[a - 1].pb(b - 1);
     }
 
-    auto djikstra = [&] (int src, vii& dis, vector<vector<pii>>& g) {
-        priority_queue<pii, vector<pii>, greater<pii>> pq;
-        dis[src] = 0;
-        pq.push({dis[src], src});
-
-        while (!pq.empty()) {
-            auto [dist, u] = pq.top();
-            pq.pop();
-
-            if (dist > dis[u]) {
-                continue;
+    vii ans;
+    function<void (int)> dfs = [&] (int u) {
+        if (visited[u])
+            return;
+        visited[u] = 1;
+        for (int& v : g[u]) {
+            if (visited[v] == 1) {
+                cout << "IMPOSSIBLE";
+                exit(0);
             }
-
-            for (auto& [v, weight] : g[u]) {
-                if (dis[v] > dis[u] + weight) {
-                    dis[v] = dis[u] + weight;
-                    pq.push({dis[v], v});
-                }
-            }
+            dfs(v);
         }
+        visited[u] = 2;
+        ans.pb(u + 1);
+        return;
     };
 
-    vii dis1(n + 1, inf), disn(n + 1, inf);
+    for (int i = 0; i < n; i++)
+        dfs(i);
 
-    djikstra(1, dis1, g1);
-    djikstra(n, disn, gn);
-
-    int ans = inf;
-    for (int a = 1; a <= n; a++) {
-        for (auto& [b, c] : g1[a]) {
-            amin(ans, dis1[a] + disn[b] + c / 2);
-        }
-    }
-
+    reverse(ans.begin(), ans.end());
     cout << ans;
 }
 

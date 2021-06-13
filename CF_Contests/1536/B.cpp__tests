@@ -1,0 +1,10 @@
+[
+	{
+		"correct_answers":
+		[
+			"ac \nf \nb",
+			"ac\nf\nb"
+		],
+		"test": "3\n28\nqaabzwsxedcrfvtgbyhnujmiklop\n13\ncleanairactbd\n10\naannttoonn\n"
+	}
+]

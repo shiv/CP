@@ -1,6 +1,6 @@
 /**
  *    author:  Shivam Gupta
- *    created: 08.06.2021 18:39:51
+ *    created: 03.06.2021 15:58:50
 **/
 
 #include <bits/stdc++.h>
@@ -29,10 +29,12 @@ template <typename Head, typename... Tail> void debug_out(Head H, Tail... T) { o
 #define pii             pair<int, int>
 #define vpii            vector<pair<int, int>>
 #define all(v)          (v).begin(), (v).end()
+#define sz(v)           (int)(v).size()
 #define pb              push_back
-#define eb              emplace_back
+#define in              insert
 #define F               first
 #define S               second
+#define inf             1e18
 
 template <typename T, typename U> istream& operator>>(istream& in, pair<T, U>& a) { in >> a.F >> a.S; return in; }
 template <typename T, typename U> ostream& operator<<(ostream& out, pair<T, U>& a) { out << a.F << " " << a.S; return out; }
@@ -40,69 +42,99 @@ template <typename T> istream& operator>>(istream& in, vector<T>& a) { for (T& x
 template <typename T> ostream& operator<<(ostream& out, vector<T>& a) { bool f = false; for (T& x : a) { if (f) out << " "; out << x; f = true; } return out; }
 template <typename T> ostream& operator<<(ostream& out, vector<vector<T>>& a) { bool f = false; for (vector<T>& x : a) { if (f) out << "\n"; out << x; f = true; } return out; }
 
-void print() { cout << "\n"; }
-template <typename Head, typename... Tail> void print(Head H, Tail... T) { cout << H << " "; print(T...); }
-
-template <typename T, typename Head, typename... Tail> T amax(T& a, Head b, Tail... c) { if (b > a) a = b; if constexpr (sizeof...(c) != 0) amax(a, c...); return a; }
-template <typename T, typename Head, typename... Tail> T amin(T& a, Head b, Tail... c) { if (b < a) a = b; if constexpr (sizeof...(c) != 0) amin(a, c...); return a; }
-
 void out(bool ok, bool cap = true) { if (cap) cout << (ok ? "YES" : "NO") << '\n'; else cout << (ok ? "Yes" : "No") << '\n'; }
 
-const int inf = 1e18L + 5;
-const int mod = 1e9 + 7;
+void print() { cout << '\n'; }
+template <typename Head> void print(Head H) { cout << H; print(); }
+template <typename Head, typename... Tail> void print(Head H, Tail... T) { cout << H << " "; print(T...); }
+
+template <typename T, typename U> T amax(T& a, U b) { if (b > a) a = b; return a; }
+template <typename T, typename U> T amin(T& a, U b) { if (b < a) a = b; return a; }
+
+const int mod = 1000000007;
 const int N = 3e5 + 5;
 
 void preSolve(int &t) {
+    cin >> t;
 }
 
 void solve(int tc = 0) {
-    int n, m;
-    cin >> n >> m;
+    int n;
+    cin >> n;
 
-    vector<vector<pii>> g1(n + 1), gn(n + 1);
-    for (int i = 0; i < m; i++) {
-        int a, b, c;
-        cin >> a >> b >> c;
-
-        g1[a].eb(b, c);
-        gn[b].eb(a, c);
+    viii g(n);
+    for (int i = 0, u, v; i < n - 1; i++) {
+        cin >> u >> v;
+        g[u].emplace_back(v);
+        g[v].emplace_back(u);
     }
 
-    auto djikstra = [&] (int src, vii& dis, vector<vector<pii>>& g) {
-        priority_queue<pii, vector<pii>, greater<pii>> pq;
-        dis[src] = 0;
-        pq.push({dis[src], src});
+    vii child(n, 1), mini(n);
+    function<void (int, int)> dfs = [&] (int u, int w = -1) {
+        if (w != -1)
+            g[u].erase(find(all(g[u]), w));
 
-        while (!pq.empty()) {
-            auto [dist, u] = pq.top();
-            pq.pop();
+        mini[u] = u;
+        for (int& v : g[u]) {
+            dfs(v, u);
+            child[u] += child[v];
+            amin(mini[u], mini[v]);
+        }
+    };
+    dfs(0, -1);
 
-            if (dist > dis[u]) {
-                continue;
+    for (int i = 0; i < n; i++)
+        child[i] -= 1;
+    vii ans(n + 1);
+    int total = n * (n - 1) / 2;
+    for (int& v : g[0])
+        ans[0] += child[v] * (child[v] + 1) / 2;
+    total -= ans[0];
+
+    int a = 0, b = 0;
+    vector<bool> vis(n);
+    function<void (int)> find = [&] (int u) {
+        static bool ok = false;
+        if (!ok && (a || b)) {
+            ok = true;
+            child[0] -= child[max(a, b)] + 1;
+        }
+        if (a == u || b == u) {
+            dbg(total, a, b, child[a], child[b]);
+            // int x = child[a] == 0 ?
+            ans[u] = total - child[a] * child[b];
+            total = child[a] * child[b];
+        }
+        for (int& v : g[a]) {
+            if (mini[v] == u && !vis[v]) {
+                vis[v] = true;
+                dbg(a, v);
+                a = v;
+                find(a);
+                // return;
             }
-
-            for (auto& [v, weight] : g[u]) {
-                if (dis[v] > dis[u] + weight) {
-                    dis[v] = dis[u] + weight;
-                    pq.push({dis[v], v});
-                }
+        }
+        for (int& v : g[b]) {
+            if (mini[v] == u && !vis[v]) {
+                vis[v] = true;
+                dbg(b, v);
+                b = v;
+                find(b);
+                // return;
             }
         }
     };
 
-    vii dis1(n + 1, inf), disn(n + 1, inf);
 
-    djikstra(1, dis1, g1);
-    djikstra(n, disn, gn);
-
-    int ans = inf;
-    for (int a = 1; a <= n; a++) {
-        for (auto& [b, c] : g1[a]) {
-            amin(ans, dis1[a] + disn[b] + c / 2);
-        }
+    for (int i = 1; i < n; i++) {
+        if (vis[i])
+            ans[i] = 0;
+        else
+            find(i);
     }
+    ans[n] = total;
 
-    cout << ans;
+    print(ans);
 }
 
 signed main() {

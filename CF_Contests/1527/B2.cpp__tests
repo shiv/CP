@@ -1,0 +1,25 @@
+[
+	{
+		"correct_answers":
+		[
+			"ALICE\nBOB\nALICE"
+		],
+		"test": "3\n3\n110\n2\n00\n4\n1010\n"
+	},
+	{
+		"test": "1\n5\n11100\n",
+		"uncorrect_answers":
+		[
+			"ALICE"
+		]
+	},
+	{
+		"test": "1\n5\n10011\n"
+	},
+	{
+		"test": "1\n7\n1010001\n"
+	},
+	{
+		"test": "1\n5\n11000\n"
+	}
+]

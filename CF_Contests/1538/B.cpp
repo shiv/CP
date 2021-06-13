@@ -1,6 +1,6 @@
 /**
  *    author:  Shivam Gupta
- *    created: 08.06.2021 18:39:51
+ *    created: 10.06.2021 20:20:57
 **/
 
 #include <bits/stdc++.h>
@@ -53,56 +53,27 @@ const int mod = 1e9 + 7;
 const int N = 3e5 + 5;
 
 void preSolve(int &t) {
+    cin >> t;
 }
 
 void solve(int tc = 0) {
-    int n, m;
-    cin >> n >> m;
+    int n;
+    cin >> n;
+    vii a(n);
+    cin >> a;
 
-    vector<vector<pii>> g1(n + 1), gn(n + 1);
-    for (int i = 0; i < m; i++) {
-        int a, b, c;
-        cin >> a >> b >> c;
-
-        g1[a].eb(b, c);
-        gn[b].eb(a, c);
+    int sum = accumulate(all(a), 0LL);
+    if (sum % n) {
+        print(-1);
+        return;
     }
 
-    auto djikstra = [&] (int src, vii& dis, vector<vector<pii>>& g) {
-        priority_queue<pii, vector<pii>, greater<pii>> pq;
-        dis[src] = 0;
-        pq.push({dis[src], src});
+    int ans = 0;
+    for (int& i : a)
+        if (i > sum / n)
+            ans += 1;
 
-        while (!pq.empty()) {
-            auto [dist, u] = pq.top();
-            pq.pop();
-
-            if (dist > dis[u]) {
-                continue;
-            }
-
-            for (auto& [v, weight] : g[u]) {
-                if (dis[v] > dis[u] + weight) {
-                    dis[v] = dis[u] + weight;
-                    pq.push({dis[v], v});
-                }
-            }
-        }
-    };
-
-    vii dis1(n + 1, inf), disn(n + 1, inf);
-
-    djikstra(1, dis1, g1);
-    djikstra(n, disn, gn);
-
-    int ans = inf;
-    for (int a = 1; a <= n; a++) {
-        for (auto& [b, c] : g1[a]) {
-            amin(ans, dis1[a] + disn[b] + c / 2);
-        }
-    }
-
-    cout << ans;
+    print(ans);
 }
 
 signed main() {
