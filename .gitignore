@@ -13,3 +13,4 @@ autocommit.*
 *__Generator.cpp
 *__Good.cpp
 *.sublime-workspace
+*.DS_Store
