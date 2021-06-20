@@ -3,10 +3,16 @@
 	[
 		{
 			"path": ".",
-        	"file_exclude_patterns": ["*.sublime-workspace", "*.out", ".gitignore", "*.sh", "*.bat", "*.cpp__tests", "in", "out"],
+        	"file_exclude_patterns": ["*.sublime-workspace", "*.exe", "*.out", ".gitignore", "*.sh", "*.bat", "*.cpp__tests", "in", "out"],
 		},
 		{
-			"path": "CF_Contests/1534"
+			"path": "Codeforces\\1534",
+		},
+		{
+			"path": "Codeforces\\1526",
+		},
+		{
+			"path": "Codeforces\\1537",
 		},
 	],
 }
