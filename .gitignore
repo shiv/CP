@@ -1,6 +1,6 @@
 *.exe
 *.out
-\!Local/
+A_Local/
 ~Temp/
 input.txt
 output.txt
