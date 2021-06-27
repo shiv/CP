@@ -56,7 +56,7 @@ for problems in problem_tags:
 	with open(problem_path+".cpp", "a") as sec:
 		pass
 	problem_url = " " + url + "/problem/" + problems + " \"";
-	os.system('python automate.py' + problem_url + problem_path + "\"")
+	os.system('python3 automate.py' + problem_url + problem_path + "\"")
 	# x = url + '/problem/' + problems
 	# subprocess.run([chrome, x], stdout=subprocess.DEVNULL)
 
