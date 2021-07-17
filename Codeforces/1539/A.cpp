@@ -1,6 +1,6 @@
 /**
  *    author:  Shivam Gupta
- *    created: 01.07.2021 09:25:05
+ *    created: 02.07.2021 16:16:21
 **/
 
 #include "bits/stdc++.h"
@@ -24,85 +24,15 @@ template <typename T, typename Head, typename... Tail> T amin(T& a, Head b, Tail
 const int inf = 1e18L + 5, mod = 1e9 + 7, N = 3e5 + 5;
 
 void preSolve(int &t) {
+    cin >> t;
 }
 
-class fenwick {
-public:
-    int n;
-    vector<int> tree;
-    vector<int> temp;
-    // original array should follow 0 based indexing
-
-    fenwick() {}
-
-    fenwick(int _n) : n(_n) {
-        tree.resize(n + 1);
-        temp.resize(n);
-        for(int i = 0; i < n; i++)
-            modify(i, 1);
-    }
-
-    fenwick(vector<int>& arr) {
-        n = arr.size();
-        tree.resize(n + 1, 0);
-        temp = arr;
-        for(int i = 0; i < n; i++) {
-            modify(i, temp[i]);
-        }
-    }
-
-    void modify(int idx, int val) {
-        temp[idx] += val;
-        idx += 1;
-        while(idx <= n) {
-            tree[idx] += val;
-            idx += idx & (-idx);
-        }
-    }
-
-    int query(int idx) {
-        idx += 1;
-        int ret = 0;
-        while(idx > 0) {
-            ret += tree[idx];
-            idx -= idx & (-idx);
-        }
-        return ret;
-    }
-
-    int lower_bound(int v) {
-        int sum = 0;
-        int pos = 0;
-        int _n = n + 1;
-        int logn = log2(_n);
-
-        for(int i = logn; i >= 0; i--) {
-            if(pos + (1 << i) < _n and sum + tree[pos + (1 << i)] < v) {
-                sum += tree[pos + (1 << i)];
-                pos += (1 << i);
-            }
-        }
-        return pos;
-    }
-};
-
-
 void solve(int tc = 0) {
-    int n;
-    cin >> n;
-    vector<int> x(n);
-    cin >> x;
+    int n, x, t;
+    cin >> n >> x >> t;
 
-    fenwick fw(n);
+    if (x >= t) {
 
-    for (int i = 0; i < n; i++) {
-        int p;
-        cin >> p;
-
-        int index = fw.lower_bound(p);
-
-        cout << x[index] << ' ';
-        fw.modify(index, -1);
     }
 }
 
