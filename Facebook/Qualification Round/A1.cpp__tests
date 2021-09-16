@@ -1,0 +1,9 @@
+[
+	{
+		"correct_answers":
+		[
+			"Case #1: 2\nCase #2: 0\nCase #3: 3\nCase #4: 4\nCase #5: 5\nCase #6: 12"
+		],
+		"test": "6\nABC\nF\nBANANA\nFBHC\nFOXEN\nCONSISTENCY\n"
+	}
+]

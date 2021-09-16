@@ -1,0 +1,24 @@
+[
+	{
+		"correct_answers":
+		[
+			"Case #1: 0\nCase #2: 1\nCase #3: 0\nCase #4: 36\nCase #5: 146"
+		],
+		"test": "5\n1\nO\n3\nXFO\n5\nFFOFF\n10\nFXXFXFOOXF\n13\nXFOFXFOFXFOFX\n"
+	},
+	{
+		"test": "4\n6\nFXOOXO\n12\nFXOOXOFXOOXO\n18\nFXOOXOFXOOXOFXOOXO\n24\nFXOOXOFXOOXOFXOOXOFXOOXO\n"
+	},
+	{
+		"test": "4\n3\nFXO\n6\nFXOFXO\n9\nFXOFXOFXO\n12\nFXOFXOFXOFXO\n"
+	},
+	{
+		"test": "5\n3\nXFO\n8\nF..OFFFF\n10\nFXXFXFOOXF\n10\nXFOF.XFOFX\n8\nO.XFOX..\n"
+	},
+	{
+		"test": "1\n9\nO.XFOF..O\n"
+	},
+	{
+		"test": "4\n6\nFXOFOX\n12\nFXOFOXFXOFOX\n18\nFXOFOXFXOFOXFXOFOX\n24\nFXOFOXFXOFOXFXOFOXFXOFOX\n"
+	}
+]
