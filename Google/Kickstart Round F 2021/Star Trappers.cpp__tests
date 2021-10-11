@@ -1,0 +1,9 @@
+[
+	{
+		"correct_answers":
+		[
+			"Case #1: IMPOSSIBLE\nCase #2: 17.071068"
+		],
+		"test": "2\n2\n0 0\n5 0\n2 2\n3\n0 0\n5 0\n0 5\n1 1\n"
+	}
+]
