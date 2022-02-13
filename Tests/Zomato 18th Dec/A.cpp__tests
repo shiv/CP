@@ -1,0 +1,11 @@
+[
+	{
+		"test": "2\n35\nAT\n"
+	},
+	{
+		"test": "5\n23252\nAATAT\n"
+	},
+	{
+		"test": "3\n123\nTTT\n"
+	}
+]

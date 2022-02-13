@@ -1,0 +1,23 @@
+[
+	{
+		"correct_answers":
+		[
+			"AC"
+		],
+		"test": "Hello,World!\n"
+	},
+	{
+		"correct_answers":
+		[
+			"WA"
+		],
+		"test": "Hello,world!\n"
+	},
+	{
+		"correct_answers":
+		[
+			"WA"
+		],
+		"test": "Hello!World!\n"
+	}
+]

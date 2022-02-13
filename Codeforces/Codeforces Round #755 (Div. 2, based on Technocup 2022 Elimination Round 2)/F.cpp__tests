@@ -1,0 +1,1 @@
+[{"test": "4\n2\nABC\nCBA\n2\nbacab\ndefed\n3\nabcde\naBcDe\nace\n2\ncodeforces\ntechnocup\n", "correct_answers": ["1\nA\n0\n\n3\nace\n3\ncoc"]}]

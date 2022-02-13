@@ -1,0 +1,9 @@
+[
+	{
+		"correct_answers":
+		[
+			"c f\na aaa\nb therightboiler"
+		],
+		"test": "3\nfc\naaaa\nthebrightboiler\n"
+	}
+]

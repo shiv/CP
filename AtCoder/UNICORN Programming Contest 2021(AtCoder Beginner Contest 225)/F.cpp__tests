@@ -1,0 +1,16 @@
+[
+	{
+		"correct_answers":
+		[
+			"atcoder"
+		],
+		"test": "4 3\node\nzaaa\nr\natc\n"
+	},
+	{
+		"correct_answers":
+		[
+			"zz"
+		],
+		"test": "5 2\nz\nz\nzzz\nz\nzzzzzz\n"
+	}
+]

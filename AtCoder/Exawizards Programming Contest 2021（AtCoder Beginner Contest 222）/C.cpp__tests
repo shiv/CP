@@ -1,0 +1,16 @@
+[
+	{
+		"correct_answers":
+		[
+			"3\n1\n2\n4"
+		],
+		"test": "2 3\nGCP\nPPP\nCCC\nPPC\n"
+	},
+	{
+		"correct_answers":
+		[
+			"1\n2\n3\n4"
+		],
+		"test": "2 2\nGC\nPG\nCG\nPP\n"
+	}
+]

@@ -1,0 +1,1 @@
+[{"correct_answers": ["YES\na\nba\naba\naba\nabacaba"], "test": "5\na\naba\nabacaba\nba\naba\n"}, {"correct_answers": ["NO"], "test": "5\na\nabacaba\nba\naba\nabab\n"}, {"correct_answers": ["YES\nqwerty\nqwerty\nqwerty"], "test": "3\nqwerty\nqwerty\nqwerty\n"}]
