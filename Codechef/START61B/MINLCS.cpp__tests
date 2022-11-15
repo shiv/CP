@@ -1,0 +1,9 @@
+[
+	{
+		"correct_answers":
+		[
+			"3\n0\n1"
+		],
+		"test": "3\n4\naaaa\naaab\n1\nc\nz\n5\nabcde\ncdefg\n"
+	}
+]
